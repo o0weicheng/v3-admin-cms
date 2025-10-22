@@ -1,0 +1,53 @@
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+
+import accountBook from './modules/account-book'
+import recipes from './modules/recipes'
+import memos from './modules/memos'
+import system from './modules/system'
+import dashboard from './modules/dashboard'
+import { ElMessage } from 'element-plus'
+
+export const modulesRoute = [dashboard, accountBook, recipes, memos, system]
+
+const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('@/layouts/BasicLayout.vue'),
+    children: [...modulesRoute],
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    meta: { title: '登录' },
+    component: () => import('@/views/login/index.vue'),
+  },
+] as RouteRecordRaw[]
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes,
+})
+// 路由白名单
+const whiteRoute = ['Login']
+router.beforeEach((to, from, next) => {
+  if (to.meta?.name) document.title = to.meta?.name ?? ''
+  const token = localStorage.getItem('token')
+  if (token) {
+    if (to.name === 'Login') {
+      return next({ name: 'Login' })
+    }
+    return next()
+  } else {
+    if (whiteRoute.includes(String(to.name))) {
+      return next()
+    }
+    ElMessage.error('登录过期，请先登录')
+    return next({
+      name: 'Login',
+      query: { redirect: to.fullPath },
+    })
+  }
+})
+
+export default router

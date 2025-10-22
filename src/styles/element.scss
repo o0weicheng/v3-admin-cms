@@ -1,0 +1,38 @@
+@use 'element-plus/theme-chalk/el-message.css';
+@use 'element-plus/theme-chalk/el-message-box.css';
+
+// 自定义主题
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #2b73af,
+      // 主色
+    ),
+    'success': (
+      'base': #4caf50,
+      // 成功绿
+    ),
+    'warning': (
+      'base': #ffb400,
+      // 警告黄
+    ),
+    'danger': (
+      'base': #f44336,
+      // 错误红
+    ),
+    'info': (
+      'base': #2196f3,
+      // 信息蓝
+    ),
+  ),
+  $border-color: (
+    '': #e4e7ed,
+  ),
+  // 边框色
+  $border-radius: (
+      'base': 6px,
+    ),
+  $button-padding-horizontal: (
+    'default': 50px,
+  )
+);
