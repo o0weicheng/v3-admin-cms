@@ -14,7 +14,7 @@ export default defineFakeRoute([
           message: 'Login successful',
           data: {
             token: faker.string.uuid(),
-            user: {
+            userInfo: {
               id: 1,
               name: 'Admin User',
               avatar: faker.image.avatar(),

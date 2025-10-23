@@ -31,7 +31,13 @@ const router = createRouter({
 // 路由白名单
 const whiteRoute = ['Login']
 router.beforeEach((to, from, next) => {
-  if (to.meta?.name) document.title = to.meta?.name ?? ''
+  const metaTitle = to.meta?.title
+
+  if (typeof metaTitle === 'string') {
+    document.title = metaTitle
+  } else {
+    document.title = ''
+  }
   const token = localStorage.getItem('token')
   if (token) {
     if (to.name === 'Login') {

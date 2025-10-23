@@ -28,11 +28,14 @@
   $border-color: (
     '': #e4e7ed,
   ),
-  // 边框色
   $border-radius: (
-      'base': 6px,
-    ),
+    'base': 6px,
+  ),
   $button-padding-horizontal: (
     'default': 50px,
+  ),
+  $card: (
+    'border-radius': 12px,
+    'padding': 12px,
   )
 );

@@ -16,7 +16,7 @@ function handleClose(key: string, keyPath: string[]) {
 </script>
 
 <template>
-  <div bg-white p-2 rounded self-start>
+  <div p-2 rounded>
     <el-menu
       router
       rounded="2"
@@ -55,6 +55,9 @@ function handleClose(key: string, keyPath: string[]) {
   border: none;
   overflow: hidden;
   --menu-active-bg: color-mix(in srgb, #6cb28e 15%, white);
+  --el-menu-bg-color: transparent;
+  --el-menu-text-color: #f8f9f7;
+  --el-menu-hover-bg-color: #ffffff50;
   .el-menu-item {
     border-radius: 6px;
     margin-bottom: 6px;
@@ -66,10 +69,10 @@ function handleClose(key: string, keyPath: string[]) {
   }
 
   .el-sub-menu {
-    &.is-active {
-      .el-sub-menu__title {
-        color: var(--el-menu-active-color);
-      }
+    .el-sub-menu__title {
+      border-radius: 6px;
+      margin-bottom: 6px;
+      overflow: hidden;
     }
   }
 }

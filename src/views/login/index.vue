@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { authApi, type LoginPayload, type LoginResponse } from '@/api/auth'
+import { useAuthStore } from '@/stores/auth'
 import { Avatar } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
@@ -22,25 +23,24 @@ const rules = reactive<FormRules<LoginPayload>>({
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 })
 
+const auth = useAuthStore()
+
 const onLogin = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        const res = await authApi.login(form)
-        console.log(res)
-
-        if (res.token) {
+        const res = await auth.login(form)
+        if (res?.token) {
           // 用户勾选了（记住我）
           if (form.remember) localStorage.setItem('token', res.token)
-          localStorage.setItem('userInfo', JSON.stringify(res.userInfo))
           if (route.query.redirect) {
             router.push({
               path: route.query.redirect as string,
             })
           } else {
             router.push({
-              name: 'DashBoard',
+              name: 'dashboard',
             })
           }
         } else {

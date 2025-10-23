@@ -1,6 +1,6 @@
 import { ofetch, type FetchContext, type FetchOptions } from 'ofetch'
 
-interface ApiResponse<T = any> {
+export interface ApiResponse<T = any> {
   code: number
   message: string
   data: T
@@ -83,7 +83,7 @@ const baseRequest = ofetch.create({
 
 export const http = async <T = any>(
   url: string,
-  options: FetchOptions<'json', any>,
+  options?: FetchOptions<'json', any>,
 ): Promise<T> => {
   try {
     return await baseRequest<T>(url, options)

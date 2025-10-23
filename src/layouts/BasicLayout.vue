@@ -9,18 +9,26 @@ const router = useRouter()
 const route = useRoute()
 
 // 一级导航（顶部）
-console.log(router)
 </script>
 
 <template>
   <el-config-provider>
     <BasicHeader />
-    <div class="flex flex-1 h-[calc(100vh-var(--el-menu-item-height)-40px)] pt-4 box-border">
-      <el-scrollbar wrap-class="pl-6">
+    <div
+      py-2
+      flex
+      flex-1
+      bg-gradient-to-r
+      from="primary"
+      to="#81b5df"
+      h="[calc(100vh-var(--el-menu-item-height)-40px)]"
+      box-border
+    >
+      <el-scrollbar>
         <BasicSide :menus="router" :active="route.path" />
       </el-scrollbar>
-      <div class="flex-1">
-        <el-scrollbar wrap-class="pr-6" view-class="pb-6 pl-6">
+      <div class="flex-1" pt-3 rounded-l-2xl overflow-hidden bg="#f8f9f7">
+        <el-scrollbar wrap-class="pr-2" view-class="pb-2 pl-2">
           <RouterView />
         </el-scrollbar>
       </div>

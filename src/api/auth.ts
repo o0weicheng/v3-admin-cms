@@ -1,4 +1,4 @@
-import { http } from '@/plugins/http'
+import { http, type ApiResponse } from '@/plugins/http'
 
 export interface LoginPayload {
   username: string
@@ -7,8 +7,7 @@ export interface LoginPayload {
 }
 
 export interface LoginResponse {
-  accessToken: string
-  refreshToken: string
+  token: string
   userInfo: Record<string, any>
 }
 
@@ -32,7 +31,7 @@ export interface ResetPasswordPayload {
 
 export const authApi = {
   login: async (payload: LoginPayload) => {
-    return await http<{ token: string; refreshToken: string; userInfo: any }>('/auth/login', {
+    return await http<ApiResponse<LoginResponse>>('/auth/login', {
       method: 'POST',
       body: payload,
     })
