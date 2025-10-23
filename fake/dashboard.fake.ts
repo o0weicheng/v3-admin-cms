@@ -67,7 +67,7 @@ export default defineFakeRoute([
           },
           orders: {
             title: '订单来源占比',
-            type: 'doughnut',
+            type: 'pie',
             data: {
               labels: ['淘宝', '京东', '拼多多', '抖音'],
               datasets: [
@@ -144,7 +144,7 @@ export default defineFakeRoute([
     response: () => ({
       code: 200,
       message: 'ok',
-      data: Array.from({ length: 10 }).map(() => ({
+      data: Array.from({ length: 6 }).map(() => ({
         id: faker.string.uuid(),
         orderNo: faker.string.alphanumeric({ length: 10 }),
         customer: faker.person.fullName(),

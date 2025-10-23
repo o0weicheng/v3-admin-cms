@@ -18,7 +18,7 @@ const route = useRoute()
       py-2
       flex
       flex-1
-      bg-gradient-to-r
+      bg-gradient-to-b
       from="primary"
       to="#81b5df"
       h="[calc(100vh-var(--el-menu-item-height)-40px)]"
@@ -27,8 +27,8 @@ const route = useRoute()
       <el-scrollbar>
         <BasicSide :menus="router" :active="route.path" />
       </el-scrollbar>
-      <div class="flex-1" pt-3 rounded-l-2xl overflow-hidden bg="#f8f9f7">
-        <el-scrollbar wrap-class="pr-2" view-class="pb-2 pl-2">
+      <div class="flex-1" rounded-l-2xl overflow-hidden bg="#f8f9f7">
+        <el-scrollbar wrap-class="pr-2" view-class="pt-2 pb-4 px-4 overflow-hidden mb-6">
           <RouterView />
         </el-scrollbar>
       </div>

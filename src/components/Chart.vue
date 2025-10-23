@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, useTemplateRef, watch, watchEffect } from 'vue'
 // SalesTrendChart.vue
 import { Chart, type ChartData, type ChartOptions, type ChartType, registerables } from 'chart.js'
 
@@ -8,16 +8,13 @@ Chart.register(...registerables)
 
 interface Props {
   title: string
-  data: ChartData<'bar' | 'line'>
+  data: ChartData
   type?: ChartType
   options?: ChartOptions
   height?: number
 }
 
-const { data, type, options } = withDefaults(defineProps<Props>(), {
-  type: 'line',
-  height: 320,
-})
+const { data, type, options, title } = defineProps<Props>()
 
 const canvas = useTemplateRef<HTMLCanvasElement>('canvas')
 let chartInstance: Chart | null = null
@@ -25,23 +22,22 @@ let chartInstance: Chart | null = null
 const defaultOptions = {
   responsive: true,
   maintainAspectRatio: false,
+  amination: {
+    duration: 500,
+    easing: 'easeOutQuart',
+  },
   plugins: {
+    title: {
+      display: true,
+      text: title,
+      align: 'start',
+      font: { size: 16, weight: 'bold' },
+      padding: { top: 12 },
+    },
     legend: {
-      position: 'bottom',
       labels: { boxWidth: 12, font: { size: 12 } },
     },
     tooltip: { mode: 'index', intersect: false },
-  },
-  scales: {
-    x: {
-      type: 'category',
-      grid: { display: false },
-    },
-    y: {
-      type: 'linear',
-      beginAtZero: true,
-      grid: { color: '#eee' },
-    },
   },
 }
 
@@ -53,17 +49,22 @@ const renderChart = async () => {
   // 确保canvas存在
   if (!canvas.value) return
   chartInstance = new Chart(canvas.value as HTMLCanvasElement, {
-    type,
+    type: type || 'line',
     data,
     options: Object.assign(defaultOptions, options),
   })
 }
 
-onMounted(renderChart)
+onMounted(() => renderChart())
 
 watch(
   () => data,
-  () => renderChart(),
+  (newData) => {
+    if (chartInstance) {
+      chartInstance.data = newData
+      chartInstance?.update()
+    }
+  },
   { deep: true },
 )
 
@@ -72,8 +73,8 @@ onBeforeUnmount(() => chartInstance?.destroy())
 </script>
 
 <template>
-  <div :style="{ height: `${height}px` }">
-    <h3 class="text-lg font-semibold mb-4">{{ title }}</h3>
+  <div :style="{ height: `${height || 320}px` }">
+    <!-- <h3 class="text-lg font-semibold mb-4">{{ title }}</h3> -->
     <canvas ref="canvas"></canvas>
   </div>
 </template>
