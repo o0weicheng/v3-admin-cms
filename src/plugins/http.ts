@@ -6,6 +6,8 @@ export interface ApiResponse<T = any> {
   data: T
 }
 
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
+
 const REFRESH_TOKEN = 'refresh_token'
 const TOKEN = 'token'
 
@@ -81,14 +83,41 @@ const baseRequest = ofetch.create({
   },
 })
 
-export const http = async <T = any>(
+const oApi = async <T>(
+  method: Method,
   url: string,
   options?: FetchOptions<'json', any>,
 ): Promise<T> => {
   try {
-    return await baseRequest<T>(url, options)
+    const res = await baseRequest<ApiResponse<T>>(url, { method, ...options })
+    if (res.code !== 200) throw new Error(res.message)
+    // console.log(res)
+    return res.data
   } catch (error: any) {
     handleResponseError(error)
     throw error
   }
 }
+
+export const http: Record<string, any> = {
+  get: async <T>(url: string, options?: FetchOptions<'json', any>): Promise<T> =>
+    await oApi<T>('GET', url, options),
+  post: async <T>(url: string, options?: FetchOptions<'json', any>): Promise<T> =>
+    await oApi<T>('POST', url, options),
+  put: async <T>(url: string, options?: FetchOptions<'json', any>): Promise<T> =>
+    await oApi<T>('PUT', url, options),
+  delete: async <T>(url: string, options?: FetchOptions<'json', any>): Promise<T> =>
+    await oApi<T>('DELETE', url, options),
+}
+
+// export const http = async <T = any>(
+//   url: string,
+//   options?: FetchOptions<'json', any>,
+// ): Promise<T> => {
+//   try {
+//     return await baseRequest<T>(url, options)
+//   } catch (error: any) {
+//     handleResponseError(error)
+//     throw error
+//   }
+// }

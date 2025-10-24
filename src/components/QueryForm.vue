@@ -73,68 +73,91 @@ defineExpose({
 </script>
 
 <template>
-  <el-form inline ref="queryFormRef" :model="fields" class="query-form-inline">
-    <el-form-item v-for="field in fields" :label="field.label" :prop="field.prop" :key="field.prop">
-      <template v-if="field.type === 'input'">
-        <el-input v-model="form[field.prop]" :placeholder="field.placeholder" />
-      </template>
-      <template v-else-if="field.type === 'number'">
-        <el-input
-          v-model.number="form[field.prop]"
-          type="number"
-          :placeholder="field.placeholder"
-        ></el-input>
-      </template>
-      <template v-else-if="field.type === 'select'">
-        <el-select
-          v-model="form[field.prop]"
-          :placeholder="field.placeholder || '请选择'"
-          :clearable="field.clearable"
-        >
-          <el-option
-            v-for="opt in field.options"
-            :key="opt.value"
-            :value="opt.value"
-            :label="opt.label"
-          />
-        </el-select>
-      </template>
-      <template v-else-if="field.type === 'date'">
-        <el-date-picker
-          v-model="form[field.prop]"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :clearable="field.clearable"
-        />
-      </template>
-      <template v-else-if="field.type === 'cascader'">
-        <el-cascader
-          v-model="form[field.prop]"
-          :placeholder="field.placeholder"
-          :options="field.options"
-          :clearable="field.clearable"
-        />
-      </template>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="onSearch">
-        <el-icon><Search /></el-icon>
-        &nbsp;查询
-      </el-button>
-      <el-button @click="onReset(queryFormRef)">
-        <el-icon><RefreshRight /></el-icon>
-        &nbsp;重置
-      </el-button>
-    </el-form-item>
+  <el-form ref="queryFormRef" label-position="top" :model="fields" class="query-form-wrap">
+    <el-row :gutter="18" align="bottom">
+      <el-col v-for="field in fields" :span="6">
+        <el-form-item :label="field.label" :prop="field.prop" :key="field.prop">
+          <template v-if="field.type === 'input'">
+            <el-input v-model="form[field.prop]" :placeholder="field.placeholder" />
+          </template>
+          <template v-else-if="field.type === 'number'">
+            <el-input
+              v-model.number="form[field.prop]"
+              type="number"
+              :placeholder="field.placeholder"
+            ></el-input>
+          </template>
+          <template v-else-if="field.type === 'select'">
+            <el-select
+              v-model="form[field.prop]"
+              :placeholder="field.placeholder || '请选择'"
+              :clearable="field.clearable"
+            >
+              <el-option
+                v-for="opt in field.options"
+                :key="opt.value"
+                :value="opt.value"
+                :label="opt.label"
+              />
+            </el-select>
+          </template>
+          <template v-else-if="field.type === 'date'">
+            <el-date-picker
+              v-model="form[field.prop]"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :clearable="field.clearable"
+            />
+          </template>
+          <template v-else-if="field.type === 'cascader'">
+            <el-cascader
+              v-model="form[field.prop]"
+              :placeholder="field.placeholder"
+              :options="field.options"
+              :clearable="field.clearable"
+            />
+          </template>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item>
+          <el-button type="primary" @click="onSearch">
+            <el-icon><Search /></el-icon>
+            &nbsp;查询
+          </el-button>
+          <el-button @click="onReset(queryFormRef)">
+            <el-icon><RefreshRight /></el-icon>
+            &nbsp;重置
+          </el-button>
+        </el-form-item></el-col
+      >
+    </el-row>
   </el-form>
 </template>
 
-<style scoped lang="scss">
-.query-form-inline {
+<style lang="scss">
+.query-form-wrap {
+  .el-form-item {
+    margin-bottom: 10px;
+  }
   .el-select {
-    --el-select-width: 220px;
+    --el-select-width: 100%;
+  }
+  .el-cascader {
+    width: 100%;
+  }
+  .el-form-item__label {
+    margin-bottom: 0;
+    background: #fff;
+    position: relative;
+    top: 8px;
+    z-index: 99;
+    border-radius: var(--el-border-radius);
+    left: 5px;
+    padding: 0 6px;
+    color: rgba(var(--el-color-primary-rgb), 0.85);
   }
 }
 </style>

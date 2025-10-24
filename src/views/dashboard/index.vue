@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import {
-  getCharts,
-  getSummary,
-  getOrders,
+  apiCharts,
+  apiSummary,
+  apiOrders,
   type DashboardSummaryResponse,
   type DashboardChartData,
   type DashboardRecentOrder,
   type DashboardLogs,
-  getLogs,
-  getUsers,
+  apiLogs,
+  apiUsers,
   type DashboardUser,
   type DashboardInventory,
-  getInventory,
+  apiInventory,
 } from '@/api/dashboard'
 import { Money, ShoppingCartFull, UserFilled, Document } from '@element-plus/icons-vue'
 import { computed, onMounted, reactive, ref, type ComputedRef } from 'vue'
@@ -82,21 +82,21 @@ const initDashboardData = async () => {
   // 一次性获取仪表盘数据
   // 防止多次请求导致数据错乱
   const [oSummary, oCharts, oOrders, oLogs, oUser, oInventory] = await Promise.all([
-    getSummary(),
-    getCharts(),
-    getOrders(),
-    getLogs(),
-    getUsers(),
-    getInventory(),
+    apiSummary(),
+    apiCharts(),
+    apiOrders(),
+    apiLogs(),
+    apiUsers(),
+    apiInventory(),
   ])
 
-  Object.assign(summary, oSummary.data)
-  Object.assign(dashboardOrders.value, oOrders.data)
-  Object.assign(dashboardLogs.value, oLogs.data)
-  Object.assign(dashboardUsers.value, oUser.data)
-  Object.assign(dashboardInventory.value, oInventory.data)
+  Object.assign(summary, oSummary)
+  Object.assign(dashboardOrders.value, oOrders)
+  Object.assign(dashboardLogs.value, oLogs)
+  Object.assign(dashboardUsers.value, oUser)
+  Object.assign(dashboardInventory.value, oInventory)
   // 加上 span 做 el-col 布局
-  chartData.value = Object.values(oCharts.data).map(
+  chartData.value = Object.values(oCharts).map(
     (chart, index): DashboardChartWithSpan => ({
       ...chart,
       span: chartSpanMap[index],
@@ -139,7 +139,7 @@ window.setInterval(() => {
     </el-col>
   </el-row>
   <el-row :gutter="10" mt="2">
-    <el-col :span="18">
+    <el-col :span="14" :md="18">
       <el-card shadow="never">
         <h3 text="#666 16px">最近订单</h3>
         <el-table :data="dashboardOrders" size="small">
@@ -159,7 +159,7 @@ window.setInterval(() => {
         </el-table>
       </el-card>
       <el-row mt-2 :gutter="10">
-        <el-col :span="12">
+        <el-col :span="24" :md="12">
           <el-card shadow="never">
             <h3 text="#666 16px">最新会员</h3>
             <el-table :data="dashboardUsers" size="small">
@@ -174,7 +174,7 @@ window.setInterval(() => {
             </el-table>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="24" :md="12">
           <el-card shadow="never">
             <h3 text="#666 16px">库存信息</h3>
             <el-table :data="dashboardInventory" size="small">
@@ -186,7 +186,7 @@ window.setInterval(() => {
         </el-col>
       </el-row>
     </el-col>
-    <el-col :span="6">
+    <el-col :span="10" :md="6">
       <el-card shadow="never" :body-style="{ padding: '0' }">
         <el-scrollbar max-height="800px" view-class="p-3">
           <h3 text="#666 16px">操作日志</h3>

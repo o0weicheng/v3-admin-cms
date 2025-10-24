@@ -115,29 +115,31 @@ const onConfirm = () => {
 </script>
 
 <template>
-  <query-form :fields="fields" @search="onSearch" />
-
-  <query-data-table
-    :selection="true"
-    :data="categoryList.data"
-    :pagination="categoryList.pagination"
-    :options="dataOptions"
-  >
-    <template #children="scope">
-      <el-tag mr-1 v-if="scope.row.children?.length" v-for="sub in scope.row.children">{{
-        sub.label
-      }}</el-tag>
-      <el-tag v-else type="danger">暂无子类</el-tag>
-    </template>
-    <template #operate="scope">
-      <!-- <el-button size="small" type="default" @click="onShowDrawer(scope.row)">查看</el-button> -->
-      <el-button size="small" type="primary" @click="onShowDrawer(scope.row)">编辑</el-button>
-      <el-button size="small" type="danger" @click="onShowDeleteMessage(scope.row?.label)"
-        >删除</el-button
-      >
-    </template>
-  </query-data-table>
-
+  <el-card>
+    <query-form :fields="fields" @search="onSearch" />
+  </el-card>
+  <el-card mt-2>
+    <query-data-table
+      :selection="true"
+      :data="categoryList.data"
+      :pagination="categoryList.pagination"
+      :options="dataOptions"
+    >
+      <template #children="scope">
+        <el-tag mr-1 v-if="scope.row.children?.length" v-for="sub in scope.row.children">{{
+          sub.label
+        }}</el-tag>
+        <el-tag v-else type="danger">暂无子类</el-tag>
+      </template>
+      <template #operate="scope">
+        <!-- <el-button size="small" type="default" @click="onShowDrawer(scope.row)">查看</el-button> -->
+        <el-button size="small" type="primary" @click="onShowDrawer(scope.row)">编辑</el-button>
+        <el-button size="small" type="danger" @click="onShowDeleteMessage(scope.row?.label)"
+          >删除</el-button
+        >
+      </template>
+    </query-data-table>
+  </el-card>
   <el-drawer
     class="el-drawer__wrap"
     v-model="drawer"

@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
-import accountBook from './modules/account-book'
+import product from './modules/product'
 import recipes from './modules/recipes'
 import memos from './modules/memos'
 import system from './modules/system'
 import dashboard from './modules/dashboard'
 import { ElMessage } from 'element-plus'
 
-export const modulesRoute = [dashboard, accountBook, recipes, memos, system]
+export const modulesRoute = [dashboard, product, recipes, memos, system]
 
 const routes = [
   {

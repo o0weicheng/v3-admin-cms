@@ -12,10 +12,9 @@ export interface QueryDataOptions<T = any, R = unknown> {
 
 export interface QueryDataPagination {
   page: number
-  size: number
-  total: number
-  totalPages?: number
-  currentPage?: number
+  pageSize: number
+  total?: number
+  limit?: number
 }
 
 defineProps<{
@@ -23,20 +22,24 @@ defineProps<{
   data: any[]
   options: QueryDataOptions[]
   edit?: boolean
-  pagination?: QueryDataPagination
 }>()
+
+const pagination = defineModel<QueryDataPagination>('pagination')
 </script>
 
 <template>
   <el-table :data="data" style="width: 100%" flexible show-overflow-tooltip>
-    <el-table-column v-if="selection" type="selection" width="55" />
-    <el-table-column v-for="opt in options" :label="opt.label">
+    <el-table-column v-if="selection" type="selection" width="35" />
+    <el-table-column v-for="opt in options" :label="opt.label" width="120">
       <template #default="scope">
         <template v-if="$slots[opt.prop]">
           <slot :name="opt.prop" :row="scope.row"></slot>
         </template>
         <template v-else>
-          <template v-if="opt.fmt">
+          <div v-if="opt.prop === 'image'" w="50px">
+            <el-image fit="cover" w="20px" :src="scope.row[opt.prop]" alt="" />
+          </div>
+          <template v-else-if="opt.fmt">
             <el-text
               v-if="opt.prop === 'status'"
               :type="(scope.row[opt.prop] && 'success') || 'warning'"
@@ -53,7 +56,7 @@ defineProps<{
         </template>
       </template>
     </el-table-column>
-    <el-table-column label="操作" v-if="$slots.operate" min-width="120">
+    <el-table-column fixed="right" label="操作" v-if="$slots.operate" min-width="200">
       <template #default="scope">
         <slot name="operate" :row="scope.row"></slot>
       </template>
@@ -64,8 +67,8 @@ defineProps<{
       background
       layout="prev, pager, next"
       :total="pagination.total"
-      :hide-on-single-page="pagination.total > pagination.size"
-      v-model:page-size="pagination.size"
+      :hide-on-single-page="pagination.total > pagination.pageSize"
+      v-model:page-size="pagination.pageSize"
       v-model:current-page="pagination.page"
     />
   </div>

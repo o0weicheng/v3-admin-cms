@@ -28,7 +28,7 @@ const route = useRoute()
         <BasicSide :menus="router" :active="route.path" />
       </el-scrollbar>
       <div class="flex-1" rounded-l-2xl overflow-hidden bg="#f8f9f7">
-        <el-scrollbar wrap-class="pr-2" view-class="pt-2 pb-4 px-4 overflow-hidden mb-6">
+        <el-scrollbar wrap-class="pr-2" view-class="pt-4 pb-4 px-4 overflow-hidden min-h-full box-border flex flex-col">
           <RouterView />
         </el-scrollbar>
       </div>

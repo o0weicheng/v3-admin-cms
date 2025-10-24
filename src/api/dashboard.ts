@@ -1,4 +1,4 @@
-import { http, type ApiResponse } from '@/plugins/http'
+import { http } from '@/plugins/http'
 
 // --------------------- 类型定义 ---------------------
 
@@ -82,46 +82,46 @@ export interface DashboardUser {
 // --------------------- API 函数 ---------------------
 
 // 仪表盘总览
-export const getSummary = async (): Promise<ApiResponse<DashboardSummaryResponse>> => {
-  return await http('/api/dashboard/summary')
+export const apiSummary = async (): Promise<DashboardSummaryResponse> => {
+  return await http.get('/api/dashboard/summary')
 }
 
 // 图表数据
-export const getCharts = async (): Promise<ApiResponse<Record<string, DashboardChartData>>> => {
-  return await http('/api/dashboard/charts')
+export const apiCharts = async (): Promise<Record<string, DashboardChartData>> => {
+  return await http.get('/api/dashboard/charts')
 }
 
 // 商品列表
-export const getProducts = async (): Promise<ApiResponse<DashboardProductItem[]>> => {
-  return await http('/api/dashboard/products')
+export const apiDashboardProducts = async (): Promise<DashboardProductItem[]> => {
+  return await http.get('/api/dashboard/products')
 }
 
 // 文章列表
-export const getArticles = async (): Promise<ApiResponse<DashboardArticleItem[]>> => {
-  return await http('/api/dashboard/articles')
+export const apiArticles = async (): Promise<DashboardArticleItem[]> => {
+  return await http.get('/api/dashboard/articles')
 }
 
 // 订单列表
-export const getOrders = async (): Promise<ApiResponse<DashboardRecentOrder[]>> => {
-  return await http('/api/dashboard/orders')
+export const apiOrders = async (): Promise<DashboardRecentOrder[]> => {
+  return await http.get('/api/dashboard/orders')
 }
 
 // 日志列表
-export const getLogs = async (): Promise<ApiResponse<DashboardLogs[]>> => {
-  return await http('/api/dashboard/logs')
+export const apiLogs = async (): Promise<DashboardLogs[]> => {
+  return await http.get('/api/dashboard/logs')
 }
 
 // 营销活动
-export const getMarketing = async (): Promise<ApiResponse<DashboardMarketingItem[]>> => {
-  return await http('/api/dashboard/marketing')
+export const apiMarketing = async (): Promise<DashboardMarketingItem[]> => {
+  return await http.get('/api/dashboard/marketing')
 }
 
 // 库存信息
-export const getInventory = async (): Promise<ApiResponse<DashboardInventory[]>> => {
-  return await http('/api/dashboard/inventory')
+export const apiInventory = async (): Promise<DashboardInventory[]> => {
+  return await http.get('/api/dashboard/inventory')
 }
 
 // 用户列表
-export const getUsers = async (): Promise<ApiResponse<DashboardUser[]>> => {
-  return await http('/api/dashboard/users')
+export const apiUsers = async (): Promise<DashboardUser[]> => {
+  return await http.get('/api/dashboard/users')
 }
