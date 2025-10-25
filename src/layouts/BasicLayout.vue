@@ -6,6 +6,11 @@ import BasicSide from './BasicSide.vue'
 const router = useRouter()
   .getRoutes()
   .filter((r) => r.meta?.menus)
+  .map(r => {
+    // 路由子项里面加了 hidden 的过滤掉
+    r.children = r?.children?.filter(r => !r?.meta?.hidden)
+    return r
+  })
 const route = useRoute()
 
 // 一级导航（顶部）

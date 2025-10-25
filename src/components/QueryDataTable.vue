@@ -56,7 +56,7 @@ const pagination = defineModel<QueryDataPagination>('pagination')
         </template>
       </template>
     </el-table-column>
-    <el-table-column fixed="right" label="操作" v-if="$slots.operate" min-width="200">
+    <el-table-column fixed="right" label="操作" v-if="$slots.operate" min-width="140">
       <template #default="scope">
         <slot name="operate" :row="scope.row"></slot>
       </template>

@@ -122,7 +122,7 @@ const onConfirm = () => {
     <query-data-table
       :selection="true"
       :data="categoryList.data"
-      :pagination="categoryList.pagination"
+      v-model:pagination="categoryList.pagination"
       :options="dataOptions"
     >
       <template #children="scope">

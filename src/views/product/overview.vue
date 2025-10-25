@@ -7,6 +7,9 @@ import type { Field } from '@/components/QueryForm.vue'
 import type { QueryDataOptions } from '@/components/QueryDataTable.vue'
 
 import { formatTime } from '@/plugins/TimeFormat'
+import { useProductStore } from '@/stores/product.ts'
+
+const router = useRouter()
 
 const fields = ref<Field[]>([
   { type: 'input', label: '商品名称', prop: 'name', placeholder: '请输入商品名' },
@@ -106,10 +109,13 @@ const getProducts = async () => {
   pagination.value = data.pagination
 }
 
-watch(() => pagination.value.page, () => {
-  getProducts()
-  console.log(pagination.value)
-})
+watch(
+  () => pagination.value.page,
+  () => {
+    getProducts()
+    console.log(pagination.value)
+  },
+)
 
 onMounted(() => {
   getProducts()
@@ -118,9 +124,36 @@ onMounted(() => {
 const onSearch = (e: Record<string, any>) => {
   getProducts()
 }
-const onProductDelete = async (id: number) => {
-  const res = await apiDeleteProduct(id)
-  await getProducts()
+
+const onShowDeleteMessage = (row: ProductResponse): void => {
+  ElMessageBox({
+    type: 'warning',
+    title: '删除商品',
+    message: `确认删除商品：<strong>${row.name}</strong>?`,
+    showCancelButton: true,
+    cancelButtonText: '取消',
+    confirmButtonText: '确认',
+    confirmButtonClass: 'el-button--danger',
+    dangerouslyUseHTMLString: true,
+    appendTo: 'body'
+  }).then(async () => {
+    const res = await apiDeleteProduct(row.id)
+    ElMessage.success(`商品：${row.name} 已删除`)
+    await getProducts()
+  })
+}
+
+const { setDetail } = useProductStore()
+const goToProductEdit = (row: ProductResponse): void => {
+  setDetail(row)
+  // 存到 localStorage 防止页面手动刷新丢失数据
+  localStorage.setItem('product', JSON.stringify(row))
+  router.push({
+    name: 'product-detail',
+    params: {
+      id: row.id,
+    }
+  })
 }
 </script>
 
@@ -136,9 +169,11 @@ const onProductDelete = async (id: number) => {
       :options="dataOptions"
     >
       <template #operate="scoped">
-        <el-button size="small" type="default">查看</el-button>
-        <el-button size="small" type="primary">编辑</el-button>
-        <el-button size="small" type="danger" @click="onProductDelete(scoped.row.id)">删除</el-button>
+<!--        <el-button size="small" type="default">查看</el-button>-->
+        <el-button size="small" type="primary" @click="goToProductEdit(scoped.row)">编辑</el-button>
+        <el-button size="small" type="danger" @click="onShowDeleteMessage(scoped.row)"
+          >删除</el-button
+        >
       </template>
     </query-data-table>
   </el-card>

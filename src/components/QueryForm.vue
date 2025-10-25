@@ -3,7 +3,7 @@ import { reactive, ref, toRaw, watch } from 'vue'
 import { Search, RefreshRight } from '@element-plus/icons-vue'
 import type { FormInstance } from 'element-plus'
 
-export type FieldType = 'input' | 'select' | 'number' | 'date' | 'cascader'
+import type { FieldType } from './types'
 
 interface FieldOption {
   label: string

@@ -14,7 +14,7 @@ import {
   apiInventory,
 } from '@/api/dashboard'
 import { Money, ShoppingCartFull, UserFilled, Document } from '@element-plus/icons-vue'
-import { computed, onMounted, reactive, ref, type ComputedRef } from 'vue'
+import { computed, reactive, ref, type ComputedRef } from 'vue'
 import Chart from '@/components/Chart.vue'
 import { formatTime } from '@/plugins/TimeFormat'
 import { useTransition } from '@vueuse/core'
@@ -111,6 +111,10 @@ onMounted(() => {
 window.setInterval(() => {
   initDashboardData()
 }, 30 * 1000)
+
+onUnmounted(() => {
+  window.clearInterval(window.setInterval(() => {}))
+})
 </script>
 
 <template>
