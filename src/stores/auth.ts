@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { authApi, type LoginPayload, type LoginResponse } from '@/api'
+import { apiLogin, type LoginPayload, type LoginResponse } from '@/api'
 
 interface SetUserOptions {
   key: string
@@ -11,10 +11,11 @@ export const useAuthStore = defineStore('auth', () => {
   const userInfo = reactive({})
 
   async function login(loginInfo: LoginPayload): Promise<LoginResponse | null> {
-    const { code, data } = await authApi.login(loginInfo)
-    if (code !== 200) return null
-    setUserInfo(data)
-    return data
+    const { token, userInfo } = await apiLogin(loginInfo)
+    localStorage.setItem('token',token)
+
+    setUserInfo(userInfo)
+    return { token, userInfo }
   }
 
   function setUserInfo(info: Record<string, any>): void

@@ -20,8 +20,25 @@ export const useProductStore = defineStore('product', () => {
     Object.assign(detail, payload)
   }
 
+  const $reset = () => {
+    Object.assign(detail, {
+      id: 0,
+      name: '',
+      category: '',
+      price: 0,
+      stock: 0,
+      sales: 0,
+      image: '',
+      description: '',
+      createdAt: '',
+      updatedAt: '',
+      status: 0,
+    })
+  }
+
   return {
     detail,
     setDetail,
+    $reset
   }
 })

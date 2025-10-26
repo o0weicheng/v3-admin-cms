@@ -1,4 +1,4 @@
-import { ofetch, type FetchContext, type FetchOptions } from 'ofetch'
+import { type FetchContext, type FetchOptions, ofetch } from 'ofetch'
 
 export interface ApiResponse<T = any> {
   code: number
@@ -19,6 +19,7 @@ const handleResponseError = (error: any) => {
   } else {
     console.error(`Network Error ${error.message}`)
   }
+  ElMessage.error(error.message)
   throw error
 }
 
@@ -73,8 +74,8 @@ const baseRequest = ofetch.create({
       const newToken = await refreshToken()
       if (newToken) {
         options.headers = setHttpAuthHeader(options.headers, newToken as string)
-        const _res = await ofetch.raw(request, options)
-        ctx.response = _res
+
+        ctx.response = await ofetch.raw(request, options)
         return
       }
     }
@@ -90,7 +91,7 @@ const oApi = async <T>(
 ): Promise<T> => {
   try {
     const res = await baseRequest<ApiResponse<T>>(url, { method, ...options })
-    if (res.code !== 200) throw new Error(res.message)
+    if (res.code !== 200) new Error(res.message)
     // console.log(res)
     return res.data
   } catch (error: any) {

@@ -29,3 +29,6 @@ export const apiProducts = async (payload: ProductPayload): Promise<ProductListR
 // 删除成功返回 true
 // 没找到商品返回 null
 export const apiDeleteProduct = async (id: number): Promise<boolean | null> => http.delete(`/api/product/delete?id=${id}`)
+
+// 编辑商品
+export const apiUpdateProduct = async (payload: ProductResponse): Promise<ProductResponse> => http.put('/api/product/update/', { body: payload })

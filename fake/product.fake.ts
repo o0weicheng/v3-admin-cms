@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-nocheck
 import { defineFakeRoute } from "vite-plugin-fake-server"
 import { faker } from '@faker-js/faker'
 

@@ -1,4 +1,4 @@
-import { http, type ApiResponse } from '@/plugins/http'
+import { http } from '@/plugins/http'
 
 export interface LoginPayload {
   username: string
@@ -29,23 +29,9 @@ export interface ResetPasswordPayload {
   newPassword: string
 }
 
-export const authApi = {
-  login: async (payload: LoginPayload) => {
-    return await http<ApiResponse<LoginResponse>>('/auth/login', {
-      method: 'POST',
-      body: payload,
-    })
-  },
-  forgotPassword: async (payload: ForgotPasswordPayload) => {
-    return await http('/auth/forgot-password', {
-      method: 'POST',
-      body: { username: payload.username },
-    })
-  },
-  resetPassword: async (payload: ResetPasswordPayload) => {
-    return await http('/auth/reset-password', {
-      method: 'PUT',
-      body: payload,
-    })
-  },
-}
+export const apiLogin = async (payload: LoginPayload) =>
+  await http.post('/auth/login', { body: payload })
+export const apiForgotPassword = async (payload: ForgotPasswordPayload) =>
+  await http.post('/auth/forgot-password', { body: payload })
+export const apiResetPassword = async (payload: ResetPasswordPayload) =>
+  await http.put('/auth/reset-password', { body: payload })

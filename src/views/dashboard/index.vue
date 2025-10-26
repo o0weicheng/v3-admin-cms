@@ -90,6 +90,7 @@ const initDashboardData = async () => {
     apiInventory(),
   ])
 
+
   Object.assign(summary, oSummary)
   Object.assign(dashboardOrders.value, oOrders)
   Object.assign(dashboardLogs.value, oLogs)

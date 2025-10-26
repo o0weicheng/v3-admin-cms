@@ -32,14 +32,12 @@ const onLogin = async (formEl: FormInstance | undefined) => {
       try {
         const res = await auth.login(form)
         if (res?.token) {
-          // 用户勾选了（记住我）
-          if (form.remember) localStorage.setItem('token', res.token)
           if (route.query.redirect) {
-            router.push({
+            await router.push({
               path: route.query.redirect as string,
             })
           } else {
-            router.push({
+            await router.push({
               name: 'dashboard',
             })
           }
