@@ -33,7 +33,10 @@ export default defineConfig({
       ],
       dts: 'src/components.d.ts',
     }),
-    vitePluginFakeServer(),
+    vitePluginFakeServer({
+      logger: true,
+      enableProd: true
+    }),
     UnoCSS(unoConfig),
   ],
   resolve: {

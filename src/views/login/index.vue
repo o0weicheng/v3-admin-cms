@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { authApi, type LoginPayload, type LoginResponse } from '@/api/auth'
+import { type LoginPayload } from '@/api/auth'
 import { useAuthStore } from '@/stores/auth'
 import { Avatar } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'

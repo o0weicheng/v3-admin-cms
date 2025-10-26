@@ -150,8 +150,16 @@ const goToProductEdit = (row: ProductResponse): void => {
   localStorage.setItem('product', JSON.stringify(row))
   router.push({
     name: 'product-detail',
-    params: {
-      id: row.id,
+    query: {
+      type: 'edit',
+    }
+  })
+}
+const goToProductCreate = () => {
+  router.push({
+    name: 'product-detail',
+    query: {
+      type: 'create',
     }
   })
 }
@@ -160,6 +168,12 @@ const goToProductEdit = (row: ProductResponse): void => {
 <template>
   <el-card>
     <query-form :fields="fields" @search="onSearch" />
+  </el-card>
+  <el-card mt-2>
+    <div flex justify-between>
+      <div></div>
+      <el-button self-end size="small" type="primary" @click="goToProductCreate">新增</el-button>
+    </div>
   </el-card>
   <el-card mt-2>
     <query-data-table

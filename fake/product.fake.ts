@@ -69,9 +69,8 @@ export default defineFakeRoute([
     url: '/api/product/create',
     method: 'POST',
     response: ({ body }) => {
-      const id = products.length + 1
       const newProduct = {
-        id,
+        id: faker.string.uuid(),
         ...body,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

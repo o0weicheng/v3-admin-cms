@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useProductStore } from '@/stores/product.ts'
-import  { apiUpdateProduct, type ProductResponse } from '@/api'
+import { apiCreateProduct, apiUpdateProduct, type ProductResponse } from '@/api'
 import { categoryList } from '@/static/product.ts'
 import { CopyDocument } from '@element-plus/icons-vue'
 import type { Field } from '@/components/DetailForm.vue'
@@ -8,29 +8,11 @@ import { formatDate } from '@vueuse/core'
 
 const { detail, setDetail, $reset } = useProductStore()
 const router = useRouter()
+const route = useRoute()
 
-onBeforeMount(() => {
-  // 用户刷新页面导致 store 数据丢失
-  // 从 localStorage 取
-  if (!detail.id) {
-    const storageProduct: ProductResponse = JSON.parse(<string>localStorage.getItem('product'))
-    setDetail(storageProduct)
-  }
-})
+const viewType = ref<string | null>(null)
 
 const fields = ref<Field<ProductResponse>[]>([
-  {
-    type: 'text',
-    label: '商品编号',
-    prop: 'id',
-    value: detail.id,
-  },
-  {
-    type: 'text',
-    label: '创建时间',
-    prop: 'createdAt',
-    fmt: (value: string) => formatDate(new Date(value), 'YYYY-MM-DD HH:mm:ss')
-  },
   {
     type: 'input',
     label: '商品名称',
@@ -50,7 +32,13 @@ const fields = ref<Field<ProductResponse>[]>([
     label: '商品售价',
     prop: 'price',
     props: { placeholder: '请输入商品销售价格', precision: 2, 'controls-position': 'right' },
-    fmt: (value: string) => `¥ ${value}`
+    fmt: (value: string) => `¥ ${Number(value).toFixed(2)}`,
+  },
+  {
+    type: 'number',
+    label: '商品库存',
+    prop: 'stock',
+    props: { placeholder: '请输入商品库存', 'controls-position': 'right' },
   },
   {
     type: 'select',
@@ -68,6 +56,7 @@ const fields = ref<Field<ProductResponse>[]>([
         value: 0,
       },
     ],
+    fmt: (value: number) => (value ? '上架' : '下架'),
   },
   {
     type: 'input',
@@ -77,6 +66,35 @@ const fields = ref<Field<ProductResponse>[]>([
     value: detail.description,
   },
 ])
+
+onBeforeMount(() => {
+  // 用户刷新页面导致 store 数据丢失
+  // 从 localStorage 取
+  if (!detail.id) {
+    const storageProduct: ProductResponse = JSON.parse(<string>localStorage.getItem('product'))
+    setDetail(storageProduct)
+  }
+
+  const type = route.query?.type as string
+
+  viewType.value = type
+  if (type === 'edit') {
+    fields.value.unshift(
+      {
+        type: 'text',
+        label: '商品编号',
+        prop: 'id',
+        value: detail.id,
+      },
+      {
+        type: 'text',
+        label: '创建时间',
+        prop: 'createdAt',
+        fmt: (value: string) => formatDate(new Date(value), 'YYYY-MM-DD HH:mm:ss'),
+      },
+    )
+  }
+})
 
 const formatFieldValue = (field: Field) => {
   const value = (detail as Record<string, any>)[field.prop]
@@ -88,15 +106,23 @@ const onBack = () => {
 }
 
 const onSaveProduct = async () => {
-  console.log(detail)
+  viewType.value === 'edit' ? await onEditProduct() : await onCreateProduct()
+}
 
-  const res = await apiUpdateProduct(toRaw(detail))
+const onCreateProduct = async () => {
+  await apiCreateProduct(toRaw(detail))
+  ElMessage.success(`新增商品 ${detail.name}`)
+  router.go(-1)
+}
+
+const onEditProduct = async () => {
+  await apiUpdateProduct(toRaw(detail))
   ElMessage.success('商品更新成功')
-  // router.go(-1)
 }
 
 onBeforeUnmount(() => {
   $reset()
+  localStorage.setItem('product', '{}')
 })
 </script>
 
@@ -105,10 +131,10 @@ onBeforeUnmount(() => {
     <template #breadcrumb>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/product/overview' }">商品管理</el-breadcrumb-item>
-        <el-breadcrumb-item>商品详情</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ viewType === 'edit' ? '编辑商品' : '新增商品' }}</el-breadcrumb-item>
       </el-breadcrumb>
     </template>
-    <template #content>
+    <template #content v-if="viewType === 'edit'">
       <h2 m-0 font-bold text-xl>{{ detail.name }}</h2>
     </template>
   </el-page-header>
@@ -140,7 +166,9 @@ onBeforeUnmount(() => {
             />
           </el-descriptions-item>
           <template v-for="field in fields" :key="field.label">
-            <el-descriptions-item :label="field.label">{{ formatFieldValue(field) }}</el-descriptions-item>
+            <el-descriptions-item :label="field.label">{{
+              formatFieldValue(field)
+            }}</el-descriptions-item>
           </template>
         </el-descriptions>
       </el-card>

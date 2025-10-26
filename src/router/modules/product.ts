@@ -25,7 +25,7 @@ export default {
       meta: { title: '商品库存' },
     },
     {
-      path: 'product-detail/:id',
+      path: 'product-detail',
       name: 'product-detail',
       component: () => import('@/views/product/detail.vue'),
       meta: {
