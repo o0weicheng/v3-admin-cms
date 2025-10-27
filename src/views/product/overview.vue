@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { h, onMounted, ref, watch } from 'vue'
-import { categoryList } from '@/static/product'
-import { apiDeleteProduct, apiProducts, type PaginationResponse, type ProductResponse } from '@/api'
+import {
+  apiCategories,
+  apiDeleteProduct,
+  apiProducts,
+  type PaginationResponse,
+  type ProductResponse,
+} from '@/api'
 
-import type { Field } from '@/components/QueryForm.vue'
+import type { Field, FieldOption } from '@/components/QueryForm.vue'
 import type { QueryDataOptions } from '@/components/QueryDataTable.vue'
 
 import { formatTime } from '@/plugins/TimeFormat'
 import { useProductStore } from '@/stores/product.ts'
 
 const router = useRouter()
+
+const categories = ref<FieldOption[]>([])
 
 const fields = ref<Field[]>([
   { type: 'input', label: '商品名称', prop: 'name', placeholder: '请输入商品名' },
@@ -25,7 +32,7 @@ const fields = ref<Field[]>([
     label: '商品类别',
     prop: 'category',
     placeholder: '选择商品类别',
-    options: categoryList.data,
+    options: [],
   },
   {
     type: 'date',
@@ -109,15 +116,29 @@ const getProducts = async () => {
   pagination.value = data.pagination
 }
 
+const getCategories = async () => {
+  const aCategories = await apiCategories()
+  if (!fields.value[2]) return
+  fields.value[2].options = aCategories.map(_c => ({
+    label: _c.name,
+    value: _c.id,
+    children: _c.children?.map(_s => ({
+      label: _s.name,
+      value: _s.id,
+    })),
+  }))
+}
+
 watch(
   () => pagination.value.page,
   () => {
     getProducts()
-    console.log(pagination.value)
+    // console.log(pagination.value)
   },
 )
 
 onMounted(() => {
+  getCategories()
   getProducts()
 })
 
@@ -135,7 +156,7 @@ const onShowDeleteMessage = (row: ProductResponse): void => {
     confirmButtonText: '确认',
     confirmButtonClass: 'el-button--danger',
     dangerouslyUseHTMLString: true,
-    appendTo: 'body'
+    appendTo: 'body',
   }).then(async () => {
     const res = await apiDeleteProduct(row.id)
     ElMessage.success(`商品：${row.name} 已删除`)
@@ -152,7 +173,7 @@ const goToProductEdit = (row: ProductResponse): void => {
     name: 'product-detail',
     query: {
       type: 'edit',
-    }
+    },
   })
 }
 const goToProductCreate = () => {
@@ -160,7 +181,7 @@ const goToProductCreate = () => {
     name: 'product-detail',
     query: {
       type: 'create',
-    }
+    },
   })
 }
 </script>
@@ -183,7 +204,7 @@ const goToProductCreate = () => {
       :options="dataOptions"
     >
       <template #operate="scoped">
-<!--        <el-button size="small" type="default">查看</el-button>-->
+        <!--        <el-button size="small" type="default">查看</el-button>-->
         <el-button size="small" type="primary" @click="goToProductEdit(scoped.row)">编辑</el-button>
         <el-button size="small" type="danger" @click="onShowDeleteMessage(scoped.row)"
           >删除</el-button

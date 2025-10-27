@@ -5,7 +5,7 @@ import type { FormInstance } from 'element-plus'
 
 import type { FieldType } from './types'
 
-interface FieldOption {
+export interface FieldOption {
   label: string
   value: string | number | any
   [key: string]: any

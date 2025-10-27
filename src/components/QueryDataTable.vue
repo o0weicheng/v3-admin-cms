@@ -7,6 +7,7 @@ export interface QueryDataOptions<T = any, R = unknown> {
   prop: string
   label: string
   type?: DataOptionType
+  width?: number
   fmt?: (value: T, row?: Record<string, unknown>, index?: number) => R
 }
 
@@ -30,7 +31,7 @@ const pagination = defineModel<QueryDataPagination>('pagination')
 <template>
   <el-table :data="data" style="width: 100%" flexible show-overflow-tooltip>
     <el-table-column v-if="selection" type="selection" width="35" />
-    <el-table-column v-for="opt in options" :label="opt.label" width="120">
+    <el-table-column v-for="opt in options" :label="opt.label" :width="opt.width ?? 120">
       <template #default="scope">
         <template v-if="$slots[opt.prop]">
           <slot :name="opt.prop" :row="scope.row"></slot>
