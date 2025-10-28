@@ -18,12 +18,12 @@ export default {
       component: () => import('@/views/product/category.vue'),
       meta: { title: '商品分类' },
     },
-    {
-      path: 'stock',
-      name: 'product-stock',
-      component: () => import('@/views/product/stock.vue'),
-      meta: { title: '商品库存' },
-    },
+    // {
+    //   path: 'stock',
+    //   name: 'product-stock',
+    //   component: () => import('@/views/product/stock.vue'),
+    //   meta: { title: '商品库存' },
+    // },
     {
       path: 'product-detail',
       name: 'product-detail',
@@ -31,7 +31,7 @@ export default {
       meta: {
         title: '商品详情',
         hidden: true,
-      }
-    }
+      },
+    },
   ],
 } as RouteRecordRaw

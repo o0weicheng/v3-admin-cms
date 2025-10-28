@@ -1,5 +1,5 @@
 import { http } from '@/plugins/http'
-import type { PaginationResponse } from '@/api/index.ts'
+import type { PaginationResponse } from '.'
 
 export interface ProductResponse {
   id: number
@@ -50,8 +50,7 @@ export const apiUpdateProduct = async (payload: ProductResponse): Promise<Produc
   http.put('/api/product/update/', { body: payload })
 
 // 商品分类查询列表 api
-export const apiCategories = async (): Promise<CategoryResponse[]> =>
-  http.get(`/api/category/list`)
+export const apiCategories = async (): Promise<CategoryResponse[]> => http.get(`/api/category/list`)
 
 // 新增商品分类 api
 export const apiCreateCategory = async (payload: CategoryResponse): Promise<CategoryResponse> =>

@@ -6,8 +6,9 @@ import memos from './modules/memos'
 import system from './modules/system'
 import dashboard from './modules/dashboard'
 import { ElMessage } from 'element-plus'
+import member from './modules/member'
 
-export const modulesRoute = [dashboard, product, recipes, memos, system]
+export const modulesRoute = [dashboard, product, recipes, memos, member, system]
 
 const routes = [
   {
