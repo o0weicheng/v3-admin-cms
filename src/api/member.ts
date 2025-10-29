@@ -34,7 +34,6 @@ export const apiMembers = async (payload: MemberPayload): Promise<MemberListResp
   let query = `page=${payload.page}&pageSize=${payload.pageSize}`
   payload.name ? (query += `&name=${payload.name}`) : null
   payload.level ? (query += `&level=${payload.level}`) : null
-  payload.status ? (query += `&name=${payload.status}`) : null
-
+  if (payload.status === 1 || payload.status === 0) query += `&status=${payload.status}`
   return http.get(`/api/members/list?${query}`)
 }

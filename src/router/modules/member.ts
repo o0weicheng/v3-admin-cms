@@ -13,7 +13,7 @@ export default {
       meta: { title: '会员管理', icon: User },
     },
     {
-      path: 'detail',
+      path: 'detail/:id',
       name: 'member-detail',
       component: () => import('@/views/member/detail.vue'),
       meta: {

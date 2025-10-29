@@ -74,9 +74,9 @@ defineExpose({
 
 <template>
   <el-form ref="queryFormRef" label-position="top" :model="fields" class="query-form-wrap">
-    <el-row :gutter="18" align="bottom">
-      <el-col v-for="field in fields" :span="6">
-        <el-form-item :label="field.label" :prop="field.prop" :key="field.prop">
+    <el-space wrap alignment="flex-end">
+      <template v-for="field in fields" :span="8" :key="field.prop">
+        <el-form-item :label="field.label" :prop="field.prop">
           <template v-if="field.type === 'input'">
             <el-input v-model="form[field.prop]" :placeholder="field.placeholder" />
           </template>
@@ -120,20 +120,18 @@ defineExpose({
             />
           </template>
         </el-form-item>
-      </el-col>
-      <el-col :span="6">
-        <el-form-item>
-          <el-button type="primary" @click="onSearch">
-            <el-icon><Search /></el-icon>
-            &nbsp;查询
-          </el-button>
-          <el-button @click="onReset(queryFormRef)">
-            <el-icon><RefreshRight /></el-icon>
-            &nbsp;重置
-          </el-button>
-        </el-form-item></el-col
-      >
-    </el-row>
+      </template>
+      <el-form-item nowrap>
+        <el-button type="primary" @click="onSearch">
+          <el-icon><Search /></el-icon>
+          &nbsp;查询
+        </el-button>
+        <el-button @click="onReset(queryFormRef)">
+          <el-icon><RefreshRight /></el-icon>
+          &nbsp;重置
+        </el-button>
+      </el-form-item>
+    </el-space>
   </el-form>
 </template>
 
@@ -143,7 +141,7 @@ defineExpose({
     margin-bottom: 10px;
   }
   .el-select {
-    --el-select-width: 100%;
+    --el-select-width: min(180px);
   }
   .el-cascader {
     width: 100%;

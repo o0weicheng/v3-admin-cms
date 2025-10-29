@@ -7,7 +7,7 @@ let memberList = Array.from({ length: 80 }).map(() => ({
   id: faker.string.uuid(),
   avatar: faker.image.avatarGitHub(),
   name: faker.person.fullName(),
-  phone: faker.phone.number('1##########'),
+  phone: faker.phone.number({ style: 'international' }),
   email: faker.internet.email(),
   level: faker.helpers.arrayElement(['普通会员', '黄金会员', '白金会员', '钻石会员']),
   balance: faker.number.float({ min: 0, max: 2000, precision: 0.01 }),
@@ -27,8 +27,6 @@ export default defineFakeRoute([
     url: '/api/members/list',
     method: 'GET',
     response: ({ query }) => {
-      console.log(query)
-
       const page = Number(query.page) || 1
       const pageSize = Number(query.pageSize) || 10
       const start = (page - 1) * pageSize
@@ -37,22 +35,23 @@ export default defineFakeRoute([
       let list = []
       if (query.name) {
         list = memberList.filter((member) => member.name.includes(query.name as string))
-      } else if (query.status) {
+      } else if (query.status === '1' || query.status === '0') {
         list = memberList.filter((member) => member.status === Number(query.status))
       } else if (query.level) {
         list = memberList.filter((member) => member.level === (query.level as string))
       } else {
-        list = memberList.slice(start, end)
+        list = memberList
       }
+      const newList = list.slice(start, end)
       return {
         code: 200,
         message: 'ok',
         data: {
-          list,
+          list: newList,
           pagination: {
             page,
             pageSize,
-            total: memberList.length,
+            total: list.length,
             limit: end,
           },
         },
