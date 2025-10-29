@@ -35,49 +35,58 @@ defineProps<{
   <el-form ref="detailFormRef" :model="fields" class="detail-form-wrap">
     <template v-for="field in fields" :key="field.prop">
       <el-form-item :label="field.label" :prop="field.prop">
-        <template v-if="field.type === 'text'">
-          <el-text v-bind="field.props">{{
-            field.fmt ? field.fmt(detail[field.prop]) : detail[field.prop]
-          }}</el-text>
+        <template v-if="$slots[field.prop]">
+          <slot :name="field.prop" :row="detail[field.prop]"></slot>
         </template>
-        <template v-else-if="field.type === 'input'">
-          <el-input v-bind="field.props" v-model="detail[field.prop]" />
-        </template>
-        <template v-else-if="field.type === 'number'">
-          <el-input-number
-            v-bind="field.props"
-            v-model.number="detail[field.prop]"
-            type="number"
-          ></el-input-number>
-        </template>
-        <template v-else-if="field.type === 'select'">
-          <el-select
-            v-bind="field.props"
-            v-model="detail[field.prop]"
-            :placeholder="field.placeholder || '请选择'"
-          >
-            <el-option
-              v-for="opt in field.options"
-              :key="opt.value"
-              :value="opt.value"
-              :label="opt.label"
+        <template v-else>
+          <template v-if="field.type === 'text'">
+            <el-text v-bind="field.props">{{
+              field.fmt ? field.fmt(detail[field.prop]) : detail[field.prop]
+            }}</el-text>
+          </template>
+          <template v-else-if="field.type === 'input' || field.type === 'textarea'">
+            <el-input :type="field.type" v-bind="field.props" v-model="detail[field.prop]" />
+          </template>
+          <template v-else-if="field.type === 'number'">
+            <el-input-number
+              v-bind="field.props"
+              v-model.number="detail[field.prop]"
+              type="number"
+            ></el-input-number>
+          </template>
+          <template v-else-if="field.type === 'select'">
+            <el-select
+              v-bind="field.props"
+              v-model="detail[field.prop]"
+              :placeholder="field.placeholder || '请选择'"
+            >
+              <el-option
+                v-for="opt in field.options"
+                :key="opt.value"
+                :value="opt.value"
+                :label="opt.label"
+              />
+            </el-select>
+          </template>
+          <template v-else-if="field.type === 'date'">
+            <el-date-picker
+              v-bind="field.props"
+              v-model="detail[field.prop]"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
             />
-          </el-select>
+          </template>
+          <template v-else-if="field.type === 'cascader'">
+            <el-cascader
+              v-bind="field.props"
+              v-model="detail[field.prop]"
+              :options="field.options"
+            />
+          </template>
+          <slot name="item" :prop="field.prop"></slot>
         </template>
-        <template v-else-if="field.type === 'date'">
-          <el-date-picker
-            v-bind="field.props"
-            v-model="detail[field.prop]"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </template>
-        <template v-else-if="field.type === 'cascader'">
-          <el-cascader v-bind="field.props" v-model="detail[field.prop]" :options="field.options" />
-        </template>
-        <slot name="item" :prop="field.prop"></slot>
       </el-form-item>
     </template>
     <slot name="footer"></slot>

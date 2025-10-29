@@ -37,3 +37,20 @@ export const apiMembers = async (payload: MemberPayload): Promise<MemberListResp
   if (payload.status === 1 || payload.status === 0) query += `&status=${payload.status}`
   return http.get(`/api/members/list?${query}`)
 }
+
+export const apiMemberDetail = async (id: string): Promise<Member> =>
+  http.get(`/api/member/detail/${id}`)
+
+// 新增会员 api
+export const apiCreateMember = async (payload: Partial<Member>): Promise<Member> =>
+  http.post(`/api/member/create`, { body: payload })
+
+// 编辑会员 api
+export const apiUpdateMember = async (payload: Member): Promise<Member> =>
+  http.put(`/api/member/update/${payload.id}`, { body: payload })
+
+// 删除会员 api
+// 删除成功返回 true
+// 没找到会员返回 null
+export const apiDeleteMember = async (id: string): Promise<boolean | null> =>
+  http.delete(`/api/member/delete/${id}`)

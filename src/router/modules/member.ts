@@ -7,7 +7,7 @@ export default {
   name: 'member',
   children: [
     {
-      path: '/',
+      path: 'overview',
       name: 'member-overview',
       component: () => import('@/views/member/overview.vue'),
       meta: { title: '会员管理', icon: User },

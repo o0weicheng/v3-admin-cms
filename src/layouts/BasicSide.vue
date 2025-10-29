@@ -10,7 +10,10 @@ defineProps<{
     <el-menu router rounded="2" class="side-menu-wrap" :default-active="active">
       <template v-for="menu in menus" :key="menu.name">
         <template v-if="menu.children.length">
-          <el-menu-item v-if="menu.children.length === 1" :index="menu.children[0].path">
+          <el-menu-item
+            v-if="menu.children.length === 1"
+            :index="`${menu.path}/${menu.children[0].path}`"
+          >
             <el-icon>
               <component :is="menu?.children[0].meta?.icon" />
             </el-icon>
