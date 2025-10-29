@@ -121,7 +121,7 @@ defineExpose({
           </template>
         </el-form-item>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="6">
         <el-form-item>
           <el-button type="primary" @click="onSearch">
             <el-icon><Search /></el-icon>
