@@ -1,5 +1,5 @@
 import { http } from '@/plugins/http'
-import type { PaginationResponse } from '.'
+import type { PaginationResponse, ProductResponse } from '.'
 
 export interface MemberPayload {
   page: number
@@ -25,6 +25,7 @@ export interface Member {
   remark: string
   createdAt: string
   updatedAt: string
+  products?: ProductResponse[]
 }
 
 type MemberListResponse = PaginationResponse<Member>

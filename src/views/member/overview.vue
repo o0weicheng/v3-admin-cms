@@ -142,7 +142,8 @@ watch(
 
 const onSearch = (data: Record<string, any>) => {
   Object.assign(form, data)
-  getMember()
+  if (pagination.value.page !== 1) pagination.value.page = 1
+  else getMember()
 }
 
 const goToMemberDetail = (member: Member) => {
@@ -162,13 +163,7 @@ const goToMemberDetail = (member: Member) => {
       v-model:pagination="pagination"
     >
       <template #avatar="scoped">
-        <el-image
-          fit="cover"
-          w="20px"
-          h="20px"
-          :src="scoped.row.avatar"
-          :preview-src-list="[scoped.row.avatar]"
-        />
+        <el-image fit="cover" lazy w="20px" h="20px" :src="scoped.row.avatar" />
       </template>
       <template #operate="scoped">
         <el-button type="primary" size="small" @click="goToMemberDetail(scoped.row)"

@@ -1,3 +1,4 @@
+import { products } from './product.fake'
 // @ts-nocheck
 import { defineFakeRoute } from 'vite-plugin-fake-server'
 import { faker } from '@faker-js/faker'
@@ -67,7 +68,11 @@ export default defineFakeRoute([
       const member = memberList.find((m) => m.id === params.id)
       if (!member) return { code: 404, message: '会员不存在', data: null }
 
-      return { code: 200, message: 'ok', data: member }
+      return {
+        code: 200,
+        message: 'ok',
+        data: { ...member, products: products.slice(0, faker.number.int({ min: 0, max: 12 })) },
+      }
     },
   },
 

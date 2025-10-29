@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { defineFakeRoute } from "vite-plugin-fake-server"
+import { defineFakeRoute } from 'vite-plugin-fake-server'
 import { faker } from '@faker-js/faker'
 
 /**
@@ -21,7 +21,7 @@ const createProduct = (id: number) => ({
 
 // 生成初始商品列表
 // @ts-ignore
-const products = Array.from({ length: 50 }).map((_, i) => createProduct(i + 1))
+export const products = Array.from({ length: 50 }).map((_, i) => createProduct(i + 1))
 
 export default defineFakeRoute([
   // 获取商品列表（分页）

@@ -26,6 +26,16 @@ defineProps<{
 }>()
 
 const pagination = defineModel<QueryDataPagination>('pagination')
+
+const emit = defineEmits<{
+  update: [value: QueryDataPagination]
+}>()
+
+defineExpose({
+  update: (value: QueryDataPagination) => {
+    emit('update', value)
+  },
+})
 </script>
 
 <template>

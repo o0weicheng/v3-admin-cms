@@ -1,9 +1,9 @@
-import { User } from '@element-plus/icons-vue'
+import { List } from '@element-plus/icons-vue'
 import type { RouteRecordRaw } from 'vue-router'
 
 export default {
   path: '/product',
-  meta: { title: '商品管理', icon: User, menus: true },
+  meta: { title: '商品管理', icon: List, menus: true },
   name: 'product',
   children: [
     {

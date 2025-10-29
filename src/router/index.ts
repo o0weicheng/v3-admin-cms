@@ -7,8 +7,9 @@ import system from './modules/system'
 import dashboard from './modules/dashboard'
 import { ElMessage } from 'element-plus'
 import member from './modules/member'
+import order from './modules/order'
 
-export const modulesRoute = [dashboard, product, recipes, memos, member, system]
+export const modulesRoute = [dashboard, order, product, recipes, memos, member, system]
 
 const routes = [
   {

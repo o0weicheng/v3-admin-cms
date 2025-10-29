@@ -6,7 +6,7 @@ export interface ApiResponse<T = any> {
   data: T
 }
 
-type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 
 const REFRESH_TOKEN = 'refresh_token'
 const TOKEN = 'token'
@@ -109,6 +109,8 @@ export const http: Record<string, any> = {
     await oApi<T>('PUT', url, options),
   delete: async <T>(url: string, options?: FetchOptions<'json', any>): Promise<T> =>
     await oApi<T>('DELETE', url, options),
+  patch: async <T>(url: string, options?: FetchOptions<'json', any>): Promise<T> =>
+    await oApi<T>('PATCH', url, options),
 }
 
 // export const http = async <T = any>(
