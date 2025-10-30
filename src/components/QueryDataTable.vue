@@ -23,6 +23,7 @@ defineProps<{
   data: any[]
   options: QueryDataOptions[]
   edit?: boolean
+  operateWidth?: number
 }>()
 
 const pagination = defineModel<QueryDataPagination>('pagination')
@@ -67,7 +68,12 @@ defineExpose({
         </template>
       </template>
     </el-table-column>
-    <el-table-column fixed="right" label="操作" v-if="$slots.operate" min-width="140">
+    <el-table-column
+      fixed="right"
+      label="操作"
+      v-if="$slots.operate"
+      :min-width="operateWidth || 140"
+    >
       <template #default="scope">
         <slot name="operate" :row="scope.row"></slot>
       </template>

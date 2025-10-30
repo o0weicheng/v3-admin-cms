@@ -8,8 +8,9 @@ import dashboard from './modules/dashboard'
 import { ElMessage } from 'element-plus'
 import member from './modules/member'
 import order from './modules/order'
+import logs from './modules/logs'
 
-export const modulesRoute = [dashboard, order, product, recipes, memos, member, system]
+export const modulesRoute = [dashboard, order, product, recipes, memos, member, logs, system]
 
 const routes = [
   {

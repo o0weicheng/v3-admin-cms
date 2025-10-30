@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, toRaw, watch } from 'vue'
+import { reactive, ref, toRaw, watch, unref, type ComputedRef } from 'vue'
 import { Search, RefreshRight } from '@element-plus/icons-vue'
 import type { FormInstance } from 'element-plus'
 
@@ -11,11 +11,13 @@ export interface FieldOption {
   [key: string]: any
 }
 
+type MaybeRef<T> = T | ComputedRef<T>
+
 export interface Field {
   type: FieldType
   label: string
   value?: unknown
-  options?: FieldOption[]
+  options?: MaybeRef<FieldOption[]>
   prop: string
   clearable?: boolean
   placeholder?: string
@@ -94,7 +96,7 @@ defineExpose({
               :clearable="field.clearable"
             >
               <el-option
-                v-for="opt in field.options"
+                v-for="opt in unref(field.options)"
                 :key="opt.value"
                 :value="opt.value"
                 :label="opt.label"
@@ -115,7 +117,7 @@ defineExpose({
             <el-cascader
               v-model="form[field.prop]"
               :placeholder="field.placeholder"
-              :options="field.options"
+              :options="unref(field.options)"
               :clearable="field.clearable"
             />
           </template>
