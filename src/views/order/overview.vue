@@ -121,6 +121,8 @@ watch(
   },
 )
 
+// 加入分页判断
+// 如果页面数大于1，且当前页数据为空，则将页码减1后重新获取数据
 const onSearch = (data?: Record<string, any>) => {
   Object.assign(form, data)
   if (pagination.value.page !== 1) pagination.value.page = 1
@@ -147,7 +149,7 @@ const onCancelOrder = (order: Order) => {
 }
 
 const goToOrderDetail = (order: Order) => {
-  router.push({ name: 'order-detail', params: { id: order.id } })
+  router.push({ name: 'order-detail', params: { id: order.orderNo } })
 }
 </script>
 

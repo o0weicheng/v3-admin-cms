@@ -42,11 +42,8 @@ export const apiOrders = async (payload: OrderPayload): Promise<OrderListRespons
 export const apiUpdateOrder = async (payload: Order): Promise<Order> =>
   await http.put(`/api/order/update/${payload.id}`, { body: payload })
 
-export const apiOrderDetail = async (id: string): Promise<Order> =>
-  await http.get(`/api/order/${id}`)
-
-export const apiCreateOrder = async (payload: Partial<Order>): Promise<Order> =>
-  http.post(`/api/order`, { body: payload })
+export const apiOrderDetail = async (orderNo: string): Promise<Order> =>
+  await http.get(`/api/order/detail/${orderNo}`)
 
 export const apiUpdateOrderStatus = async (id: string, status: Order['status']): Promise<Order> =>
   http.patch(`/api/order/${id}/status`, { body: { status } })

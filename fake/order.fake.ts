@@ -1,27 +1,30 @@
+import { products } from './product.fake'
+// @ts-nocheck
+import { products } from './product.fake'
+
 import { defineFakeRoute } from 'vite-plugin-fake-server'
 import { faker } from '@faker-js/faker'
 
+const productCount = () => faker.number.int({ min: 1, max: products.length - 10 })
+const p = () => {
+  const c = productCount()
+  return products.slice(c, c + faker.number.int({ min: 1, max: 8 })).map((prod) => ({
+    ...prod,
+    quantity: faker.number.int({ min: 1, max: 5 }),
+  }))
+}
 // 模拟数据库：订单列表
 let orderList = Array.from({ length: 120 }).map(() => {
   const orderId = faker.string.uuid()
-  const productCount = faker.number.int({ min: 1, max: 5 })
-  const products = Array.from({ length: productCount }).map(() => ({
-    id: faker.string.uuid(),
-    name: faker.commerce.productName(),
-    price: faker.number.float({ min: 10, max: 999, precision: 0.01 }),
-    quantity: faker.number.int({ min: 1, max: 3 }),
-    image: faker.image.urlLoremFlickr({ category: 'product' }),
-  }))
-
-  const totalAmount = products.reduce((sum, p) => sum + p.price * p.quantity, 0)
+  const totalAmount = p().reduce((sum, p) => sum + p.price * p.quantity, 0)
 
   return {
     id: orderId,
     orderNo: faker.string.alphanumeric({ length: 10, casing: 'upper' }),
     userName: faker.person.fullName(),
-    userPhone: faker.phone.number('1##########'),
+    userPhone: faker.phone.number({ style: 'international' }),
     userId: faker.string.uuid(),
-    products,
+    products: p(),
     totalAmount: Number(totalAmount.toFixed(2)),
     payType: faker.helpers.arrayElement(['微信支付', '支付宝', '银行卡']),
     status: faker.helpers.arrayElement(['待支付', '已支付', '已发货', '已完成', '已取消']),
@@ -70,12 +73,12 @@ export default defineFakeRoute([
 
   // 获取订单详情
   {
-    url: '/api/order/:id',
+    url: '/api/order/detail/:orderNo',
     method: 'get',
     response: ({ params }) => {
-      const order = orderList.find((o) => o.orderNo === params.id)
-      if (!order) return { code: 404, message: '订单不存在', data: null }
+      const order = orderList.find((o) => o.orderNo === params.orderNo)
 
+      if (!order) return { code: 404, message: '订单不存在', data: null }
       return { code: 200, message: 'ok', data: order }
     },
   },
@@ -89,7 +92,7 @@ export default defineFakeRoute([
         id: faker.string.uuid(),
         orderNo: faker.string.alphanumeric({ length: 10, casing: 'upper' }),
         userName: body.userName || faker.person.fullName(),
-        userPhone: body.userPhone || faker.phone.number('1##########'),
+        userPhone: body.userPhone || faker.phone.number({ style: 'international' }),
         products: body.products || [],
         totalAmount: body.totalAmount || 0,
         payType: body.payType || '微信支付',
@@ -109,7 +112,7 @@ export default defineFakeRoute([
     url: '/api/order/:id',
     method: 'put',
     response: ({ params, body }) => {
-      const index = orderList.findIndex((o) => o.id === params.id)
+      const index = orderList.findIndex((o) => o.orderNo === params.id)
       if (index === -1) return { code: 404, message: '订单不存在', data: null }
 
       orderList[index] = {

@@ -2,16 +2,16 @@
 import {
   apiCharts,
   apiSummary,
-  apiOrders,
+  apiDashboardOrders,
   type DashboardSummaryResponse,
   type DashboardChartData,
   type DashboardRecentOrder,
   type DashboardLogs,
-  apiLogs,
-  apiUsers,
+  apiDashboardLogs,
+  apiDashboardUsers,
   type DashboardUser,
   type DashboardInventory,
-  apiInventory,
+  apiDashboardInventory,
 } from '@/api/dashboard'
 import { Money, ShoppingCartFull, UserFilled, Document } from '@element-plus/icons-vue'
 import { computed, reactive, ref, type ComputedRef } from 'vue'
@@ -84,12 +84,11 @@ const initDashboardData = async () => {
   const [oSummary, oCharts, oOrders, oLogs, oUser, oInventory] = await Promise.all([
     apiSummary(),
     apiCharts(),
-    apiOrders(),
-    apiLogs(),
-    apiUsers(),
-    apiInventory(),
+    apiDashboardOrders(),
+    apiDashboardLogs(),
+    apiDashboardUsers(),
+    apiDashboardInventory(),
   ])
-
 
   Object.assign(summary, oSummary)
   Object.assign(dashboardOrders.value, oOrders)
