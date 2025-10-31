@@ -10,7 +10,7 @@ import member from './modules/member'
 import order from './modules/order'
 import logs from './modules/logs'
 
-export const modulesRoute = [dashboard, order, product, recipes, memos, member, logs, system]
+export const modulesRoute = [dashboard, order, product, member, logs, system]
 
 const routes = [
   {

@@ -13,7 +13,7 @@ interface FieldOption {
 export type Formatter<T = any, R = string> = (value: T) => R
 
 export interface Field<TData extends Record<string, any> = any, TValue = any, TResult = string> {
-  type: FieldType
+  type: FieldType | HTMLInputElement['type']
   label: string
   value?: any
   options?: FieldOption[]
@@ -67,6 +67,9 @@ defineProps<{
                 :label="opt.label"
               />
             </el-select>
+          </template>
+          <template v-else-if="field.type === 'switch'">
+            <el-switch v-bind="field.props" v-model="detail[field.prop]"> </el-switch>
           </template>
           <template v-else-if="field.type === 'date'">
             <el-date-picker

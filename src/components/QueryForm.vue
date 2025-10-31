@@ -14,7 +14,7 @@ export interface FieldOption {
 type MaybeRef<T> = T | ComputedRef<T>
 
 export interface Field {
-  type: FieldType
+  type: FieldType | HTMLInputElement['type']
   label: string
   value?: unknown
   options?: MaybeRef<FieldOption[]>
@@ -32,7 +32,6 @@ const props = defineProps<{
 }>()
 
 const initForm = () => {
-  // 初始化、重置 form
   props.fields?.forEach((f) => {
     form[f.prop] = f.value ?? ''
   })
@@ -123,16 +122,18 @@ defineExpose({
           </template>
         </el-form-item>
       </template>
-      <el-form-item nowrap>
-        <el-button type="primary" @click="onSearch">
-          <el-icon><Search /></el-icon>
-          &nbsp;查询
-        </el-button>
-        <el-button @click="onReset(queryFormRef)">
-          <el-icon><RefreshRight /></el-icon>
-          &nbsp;重置
-        </el-button>
-      </el-form-item>
+      <slot name="default">
+        <el-form-item nowrap>
+          <el-button type="primary" @click="onSearch">
+            <el-icon><Search /></el-icon>
+            &nbsp;查询
+          </el-button>
+          <el-button @click="onReset(queryFormRef)">
+            <el-icon><RefreshRight /></el-icon>
+            &nbsp;重置
+          </el-button>
+        </el-form-item>
+      </slot>
     </el-space>
   </el-form>
 </template>
