@@ -1,118 +1,107 @@
-// /mock/system.ts
-import { defineFakeRoute } from 'vite-plugin-fake-server'
+import { faker } from '@faker-js/faker'
+// mock/system/account.ts
+import { defineFakeRoute } from 'vite-plugin-fake-server/client'
 
-let systemConfig = {
-  siteName: 'xx特产商城',
-  logo: 'https://loremflickr.com/100/100/shop,logo/all',
-  themeColor: '#409EFF',
-  language: 'zh-CN',
-  timezone: 'Asia/Shanghai',
-  fileUploadLimit: 50, // MB
-  companyInfo: {
-    name: 'xx市味道电商有限公司',
-    contactEmail: 'support@techan.com',
-    contactPhone: '0754-88888888',
-    address: '广东省xx市xx区xx路88号',
+let uuid = [faker.string.uuid(), faker.string.uuid(), faker.string.uuid()]
+let users = [
+  {
+    id: uuid[0],
+    username: 'admin',
+    nickname: '超级管理员',
+    role: 'admin',
+    status: 1,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
   },
-  smtp: {
-    host: 'smtp.qq.com',
-    port: 465,
-    user: 'admin@qq.com',
-    fromName: 'xx商城',
-    enabled: true,
+  {
+    id: uuid[1],
+    username: 'editor',
+    nickname: '内容编辑',
+    role: 'editor',
+    status: 1,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
   },
-  storage: {
-    type: 'oss',
-    endpoint: 'oss-cn-shenzhen.aliyuncs.com',
-    bucket: 'techan-static',
-    domain: 'https://cdn.techan.com',
+  {
+    id: uuid[2],
+    username: 'visitor',
+    nickname: '访客',
+    role: 'visitor',
+    status: 0,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
   },
-  security: {
-    loginVerify: true,
-    passwordExpireDays: 90,
-    maxLoginRetry: 5,
-    ipWhitelist: ['127.0.0.1'],
+]
+
+let roles = [
+  {
+    id: uuid[0],
+    name: 'admin',
+    role: '管理员',
+    permissions: ['user:add', 'user:edit', 'user:delete', 'role:assign'],
   },
-  maintenanceMode: false,
-  version: '1.0.0',
-  updateTime: new Date().toISOString(),
-}
+  { id: uuid[1], name: 'editor', role: '编辑', permissions: ['article:add', 'article:edit'] },
+  { id: uuid[2], name: 'visitor', role: '访客', permissions: [] },
+]
+
+let permissions = [
+  { id: faker.string.uuid(), name: 'user:add', label: '新增用户' },
+  { id: faker.string.uuid(), name: 'user:edit', label: '编辑用户' },
+  { id: faker.string.uuid(), name: 'user:delete', label: '删除用户' },
+  { id: faker.string.uuid(), name: 'role:assign', label: '分配角色' },
+  { id: faker.string.uuid(), name: 'article:add', label: '新增文章' },
+  { id: faker.string.uuid(), name: 'article:edit', label: '编辑文章' },
+]
 
 export default defineFakeRoute([
-  // 获取系统配置
+  // 获取用户列表
   {
-    url: '/api/system/config',
+    url: '/api/system/users',
     method: 'get',
-    response: () => {
-      return {
-        code: 200,
-        message: '获取系统配置成功',
-        data: systemConfig,
+    response: ({ query }) => {
+      const { keyword } = query
+      let data = users
+      if (keyword) {
+        data = data.filter((u) => u.username.includes(keyword) || u.nickname.includes(keyword))
       }
+      return { code: 200, message: 'success', data }
     },
   },
-
-  // 更新系统配置
+  // 新增用户
   {
-    url: '/api/system/config',
+    url: '/api/system/users',
     method: 'post',
     response: ({ body }) => {
-      systemConfig = { ...systemConfig, ...body, updateTime: new Date().toISOString() }
-      return {
-        code: 200,
-        message: '系统配置已更新',
-        data: systemConfig,
-      }
+      const id = Date.now()
+      users.push({ id, ...body, createdAt: new Date().toISOString(), status: 1 })
+      return { code: 200, message: '用户创建成功' }
     },
   },
-
-  // 恢复默认配置
+  // 编辑用户
   {
-    url: '/api/system/reset',
-    method: 'post',
-    response: () => {
-      systemConfig = {
-        siteName: 'xx特产商城',
-        logo: 'https://loremflickr.com/100/100/shop,logo/all',
-        themeColor: '#409EFF',
-        language: 'zh-CN',
-        timezone: 'Asia/Shanghai',
-        fileUploadLimit: 50,
-        companyInfo: {
-          name: 'xx市味道电商有限公司',
-          contactEmail: 'support@techan.com',
-          contactPhone: '0754-88888888',
-          address: '广东省xx市xx区xx路88号',
-        },
-        smtp: {
-          host: 'smtp.qq.com',
-          port: 465,
-          user: 'admin@qq.com',
-          fromName: 'xx商城',
-          enabled: true,
-        },
-        storage: {
-          type: 'oss',
-          endpoint: 'oss-cn-shenzhen.aliyuncs.com',
-          bucket: 'techan-static',
-          domain: 'https://cdn.techan.com',
-        },
-        security: {
-          loginVerify: true,
-          passwordExpireDays: 90,
-          maxLoginRetry: 5,
-          ipWhitelist: ['127.0.0.1'],
-        },
-        maintenanceMode: false,
-        version: '1.0.0',
-        updateTime: new Date().toISOString(),
-      }
-
-      return {
-        code: 200,
-        message: '已恢复默认系统配置',
-        data: systemConfig,
-      }
+    url: '/api/system/users/:id',
+    method: 'put',
+    response: ({ params, body }) => {
+      users = users.map((u) => (u.id === Number(params.id) ? { ...u, ...body } : u))
+      return { code: 200, message: '用户更新成功' }
     },
+  },
+  // 删除用户
+  {
+    url: '/api/system/users/:id',
+    method: 'delete',
+    response: ({ params }) => {
+      users = users.filter((u) => u.id !== Number(params.id))
+      return { code: 200, message: '用户删除成功' }
+    },
+  },
+  // 获取角色列表
+  {
+    url: '/api/system/roles',
+    method: 'get',
+    response: () => ({ code: 200, message: 'success', data: roles }),
+  },
+  // 获取权限列表
+  {
+    url: '/api/system/permissions',
+    method: 'get',
+    response: () => ({ code: 200, message: 'success', data: permissions }),
   },
 ])

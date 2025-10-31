@@ -4,6 +4,7 @@ export * from './products'
 export * from './member'
 export * from './order'
 export * from './logs'
+export * from './system'
 
 export interface PaginationResponse<T = any> {
   pagination: {
