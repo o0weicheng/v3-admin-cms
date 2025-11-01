@@ -119,10 +119,10 @@ const getProducts = async () => {
 const getCategories = async () => {
   const aCategories = await apiCategories()
   if (!fields.value[2]) return
-  fields.value[2].options = aCategories.map(_c => ({
+  fields.value[2].options = aCategories.map((_c) => ({
     label: _c.name,
     value: _c.id,
-    children: _c.children?.map(_s => ({
+    children: _c.children?.map((_s) => ({
       label: _s.name,
       value: _s.id,
     })),

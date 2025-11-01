@@ -1,7 +1,14 @@
 import { http } from '@/plugins/http'
-import type { PaginationResponse } from '.'
 
-type RoleName = 'admin' | 'editor' | 'visitor'
+export type RoleName = 'admin' | 'editor' | 'visitor' | ''
+export type PermissionMap = {
+  'user:add': '新增用户'
+  'user:edit': '编辑用户'
+  'user:delete': '删除用户'
+  'role:assign': '分配角色'
+  'article:add': '新增文章'
+  'article:edit': '编辑文章'
+}
 
 export interface User {
   id: string
@@ -12,11 +19,11 @@ export interface User {
   createdAt: string
 }
 
-export interface Role {
-  id: string
+export interface Role<T = keyof PermissionMap> {
+  id?: string
   name: string
   role: RoleName
-  permissions: string[]
+  permissions: T[]
 }
 
 export interface Permission {
@@ -28,3 +35,6 @@ export interface Permission {
 export const apiUserList = (): Promise<User[]> => http.get('/api/system/users')
 export const apiRoleList = (): Promise<Role[]> => http.get('/api/system/roles')
 export const apiPermissionList = (): Promise<Permission[]> => http.get('/api/system/permissions')
+export const apiRoleEdit = (payload: Role): Promise<Role> => http.put(`/api/system/roles/update/${payload.id}`, { body: payload })
+export const apiRoleCreate = (payload: Role): Promise<Role> => http.post(`/api/system/roles/create`, { body: payload })
+export const apiRoleDelete = (id: string): Promise<Role[]> => http.delete(`/api/system/roles/delete/${id}`)

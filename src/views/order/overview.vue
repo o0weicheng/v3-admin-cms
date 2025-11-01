@@ -134,18 +134,14 @@ const onCancelOrder = (order: Order) => {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
+  }).then(async () => {
+    await apiUpdateOrderStatus(order.id, '已取消')
+    await getOrders()
+    ElMessage({
+      type: 'success',
+      message: '订单已取消',
+    })
   })
-    .then(async () => {
-      await apiUpdateOrderStatus(order.id, '已取消')
-      await getOrders()
-      ElMessage({
-        type: 'success',
-        message: '订单已取消',
-      })
-    })
-    .catch(() => {
-      // 取消操作
-    })
 }
 
 const goToOrderDetail = (order: Order) => {
