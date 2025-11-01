@@ -5,12 +5,23 @@ import {
   apiRoleDelete,
   apiRoleEdit,
   apiRoleList,
+  apiUserList,
   type Permission,
   type PermissionMap,
   type Role,
+  type User,
 } from '@/api'
 import { ref } from 'vue'
+import { formatDate } from '@vueuse/core'
+import RoleEditorForm from '@/views/system/components/RoleEditorForm.vue'
 
+const userList = ref<User[]>([])
+const userDetail = ref<Omit<User, 'createdAt'>>({
+  nickname: '',
+  username: '',
+  role: '',
+  status: 1
+})
 const roleList = ref<Role[]>([])
 const roleDetail = ref<Role>({
   name: '',
@@ -33,8 +44,8 @@ const drawerConfig = ref<{
   visibility: false,
   title: '',
 })
-const init = async () => {
-  await Promise.all([getPermissions(), getRoles()])
+const init = () => {
+  Promise.all([getPermissions(), getRoles(), getUsers()])
 }
 const getPermissions = async () => {
   PermissionList.value = await apiPermissionList()
@@ -42,17 +53,14 @@ const getPermissions = async () => {
 const getRoles = async () => {
   roleList.value = await apiRoleList()
 }
+const getUsers = async () => {
+  userList.value = await apiUserList()
+}
 
 const autoCompleteSearch = (query: string, cb: (arg: any) => void) => {
   const results = query ? roleList.value.filter((r) => r.name.indexOf(query) === 0) : roleList.value
-  console.log(results)
-
-  // call callback function to return suggestions
   cb(results)
 }
-onBeforeMount(() => {
-  init()
-})
 
 const handleAddRole = () => {
   drawerConfig.value = {
@@ -96,6 +104,10 @@ const onSubmitRoleEditor = async () => {
   drawerConfig.value.visibility = false
   await getRoles()
 }
+
+onBeforeMount(() => {
+  init()
+})
 </script>
 
 <template>
@@ -106,7 +118,6 @@ const onSubmitRoleEditor = async () => {
         <el-button type="primary" @click="handleAddRole">新增角色</el-button>
       </div>
     </template>
-
     <el-table :data="roleList" border style="width: 100%">
       <el-table-column prop="name" label="角色名称" width="120" />
       <el-table-column prop="role" label="角色" width="100" />
@@ -120,46 +131,42 @@ const onSubmitRoleEditor = async () => {
           </template>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column label="操作" width="135">
         <template #default="{ row }">
           <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
-          <el-button type="danger" link @click="handleDelete(row)">删除</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-card>
+
+  <el-card mt-2>
+    <template #header>
+      <div flex justify-between items-center>
+        <span>账号管理</span>
+        <el-button type="primary" @click="handleAddRole">添加账号</el-button>
+      </div>
+    </template>
+    <el-table :data="userList" border style="width: 100%">
+      <el-table-column prop="nickname" label="账号" />
+      <el-table-column prop="role" label="角色" />
+      <el-table-column prop="status" label="状态">
+        <template #default="scoped">
+          <status-dot :label="scoped.row.status ? '正常' : '禁用'" :type="scoped.row.status ? 'success' : 'danger'" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="permissions" label="创建时间" :formatter="(row) => formatDate(new Date(row.createdAt), 'YYYY-MM-DD HH:mm:ss')" />
+      <el-table-column label="操作" width="135">
+        <template #default="{ row }">
+          <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
   </el-card>
 
   <el-drawer v-model="drawerConfig.visibility" :title="drawerConfig.title" @close="onDrawerClose">
-    <el-form flex flex-col h-full :model="roleDetail">
-      <div flex-1 h-full w-full>
-        <el-form-item label="角色名称">
-          <el-autocomplete
-            v-model="roleDetail.name"
-            value-key="name"
-            :fetch-suggestions="autoCompleteSearch"
-            :trigger-on-focus="false"
-          />
-        </el-form-item>
-        <el-form-item label="角色">
-          <el-input v-model="roleDetail.role"></el-input>
-        </el-form-item>
-        <el-form-item label="角色权限">
-          <el-checkbox-group v-model="roleDetail.permissions">
-            <template v-for="permission in Object.keys(permissionsMap)">
-              <el-checkbox
-                :label="permissionsMap[permission as keyof PermissionMap]"
-                :value="permission"
-              ></el-checkbox>
-            </template>
-          </el-checkbox-group>
-        </el-form-item>
-      </div>
-      <el-form-item>
-        <div flex-1></div>
-        <el-button type="primary" @click="onSubmitRoleEditor">保存</el-button>
-        <el-button @click="drawerConfig.visibility = false">取消</el-button>
-      </el-form-item>
-    </el-form>
+    <role-editor-form :form="roleDetail" :map="permissionsMap" @visibility="drawerConfig.visibility = false" @submit="onSubmitRoleEditor" />
   </el-drawer>
 </template>
 

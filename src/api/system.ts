@@ -11,10 +11,10 @@ export type PermissionMap = {
 }
 
 export interface User {
-  id: string
-  username: string
+  id?: string
+  username: RoleName
   nickname: string
-  role: RoleName
+  role: string
   status: 0 | 1
   createdAt: string
 }

@@ -66,5 +66,6 @@ declare module 'vue' {
     QueryForm: typeof import('./components/QueryForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    StatusDot: typeof import('./components/StatusDot.vue')['default']
   }
 }
