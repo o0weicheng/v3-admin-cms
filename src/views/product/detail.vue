@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useProductStore } from '@/stores/product.ts'
-import { apiCreateProduct, apiUpdateProduct, type ProductResponse } from '@/api'
-import { categoryList } from '@/static/product.ts'
+import { apiCategories, apiCreateProduct, apiUpdateProduct, type ProductResponse } from '@/api'
 import { CopyDocument } from '@element-plus/icons-vue'
 import type { Field } from '@/components/DetailForm.vue'
 import { formatDate } from '@vueuse/core'
@@ -24,7 +23,7 @@ const fields = ref<Field<ProductResponse>[]>([
     label: '商品类别',
     prop: 'category',
     props: { placeholder: '选择商品类别' },
-    options: categoryList.data,
+    options: [],
     value: detail.category,
   },
   {
@@ -67,7 +66,21 @@ const fields = ref<Field<ProductResponse>[]>([
   },
 ])
 
+const getCategories = async () => {
+  const aCategories = await apiCategories()
+  if (!fields.value[2]) return
+  fields.value[2].options = aCategories.map((_c) => ({
+    label: _c.name,
+    value: _c.id,
+    children: _c.children?.map((_s) => ({
+      label: _s.name,
+      value: _s.id,
+    })),
+  }))
+}
+
 onBeforeMount(() => {
+  getCategories()
   // 用户刷新页面导致 store 数据丢失
   // 从 localStorage 取
   if (!detail.id) {

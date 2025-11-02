@@ -1,12 +1,10 @@
 // @ts-nocheck
 import { faker } from '@faker-js/faker'
-// mock/system/account.ts
 import { defineFakeRoute } from 'vite-plugin-fake-server/client'
 
-let uuid = [faker.string.uuid(), faker.string.uuid(), faker.string.uuid()]
-let users = [
+export let users = [
   {
-    id: uuid[0],
+    id: faker.string.uuid(),
     username: 'admin',
     nickname: '超级管理员',
     role: '管理员',
@@ -14,7 +12,7 @@ let users = [
     createdAt: faker.date.recent({ days: 30 }).toISOString(),
   },
   {
-    id: uuid[1],
+    id: faker.string.uuid(),
     username: 'editor',
     nickname: '内容编辑',
     role: '编辑',
@@ -22,7 +20,7 @@ let users = [
     createdAt: faker.date.recent({ days: 30 }).toISOString(),
   },
   {
-    id: uuid[2],
+    id: faker.string.uuid(),
     username: 'visitor',
     nickname: '访客',
     role: '访客',
@@ -31,29 +29,83 @@ let users = [
   },
 ]
 
-let roles = [
+export let permissions = [
+  {
+    id: faker.string.uuid(),
+    name: 'user:add',
+    label: '新增用户',
+    createBy: users[0].nickname,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
+  },
+  {
+    id: faker.string.uuid(),
+    name: 'user:edit',
+    label: '编辑用户',
+    createBy: users[0].nickname,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
+  },
+  {
+    id: faker.string.uuid(),
+    name: 'user:delete',
+    label: '删除用户',
+    createBy: users[0].nickname,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
+  },
+  {
+    id: faker.string.uuid(),
+    name: 'role:assign',
+    label: '分配角色',
+    createBy: users[0].nickname,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
+  },
+  {
+    id: faker.string.uuid(),
+    name: 'article:add',
+    label: '新增文章',
+    createBy: users[0].nickname,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
+  },
+  {
+    id: faker.string.uuid(),
+    name: 'article:edit',
+    label: '编辑文章',
+    createBy: users[0].nickname,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
+  },
+  {
+    id: faker.string.uuid(),
+    name: 'permissions:add',
+    label: '新增权限',
+    createBy: users[0].nickname,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
+  },
+  {
+    id: faker.string.uuid(),
+    name: 'permissions:edit',
+    label: '编辑权限',
+    createBy: users[0].nickname,
+    createdAt: faker.date.recent({ days: 30 }).toISOString(),
+  },
+]
+export let roles = [
   {
     id: faker.string.uuid(),
     name: 'admin',
     role: '管理员',
     permissions: [
-      'user:add',
-      'user:edit',
-      'user:delete',
-      'role:assign',
+      permissions[0].name,
+      permissions[1].name,
+      permissions[2].name,
+      permissions[3].name,
     ],
   },
-  { id: faker.string.uuid(), name: 'editor', role: '编辑', permissions: ['article:add', 'article:edit'] },
+  {
+    id: faker.string.uuid(),
+    name: 'editor',
+    role: '编辑',
+    permissions: [permissions[4].name, permissions[5].name],
+  },
   { id: faker.string.uuid(), name: 'visitor', role: '访客', permissions: [] },
-]
-
-let permissions = [
-  { id: faker.string.uuid(), name: 'user:add', label: '新增用户' },
-  { id: faker.string.uuid(), name: 'user:edit', label: '编辑用户' },
-  { id: faker.string.uuid(), name: 'user:delete', label: '删除用户' },
-  { id: faker.string.uuid(), name: 'role:assign', label: '分配角色' },
-  { id: faker.string.uuid(), name: 'article:add', label: '新增文章' },
-  { id: faker.string.uuid(), name: 'article:edit', label: '编辑文章' },
 ]
 
 export default defineFakeRoute([
@@ -72,7 +124,7 @@ export default defineFakeRoute([
   },
   // 新增用户
   {
-    url: '/api/system/users',
+    url: '/api/system/users/create',
     method: 'post',
     response: ({ body }) => {
       const id = faker.string.uuid()
@@ -82,7 +134,7 @@ export default defineFakeRoute([
   },
   // 编辑用户
   {
-    url: '/api/system/users/:id',
+    url: '/api/system/users/update/:id',
     method: 'put',
     response: ({ params, body }) => {
       users = users.map((u) => (u.id === params.id ? { ...u, ...body } : u))
@@ -91,7 +143,7 @@ export default defineFakeRoute([
   },
   // 删除用户
   {
-    url: '/api/system/users/:id',
+    url: '/api/system/users/delete/:id',
     method: 'delete',
     response: ({ params }) => {
       users = users.filter((u) => u.id !== params.id)
@@ -108,11 +160,12 @@ export default defineFakeRoute([
   {
     url: '/api/system/roles/create',
     method: 'post',
-    response: ({body}) => {
+    response: ({ body }) => {
       const id = faker.string.uuid()
       roles.push({
         id,
         ...body,
+        createdAt: new Date().toISOString(),
       })
       return { code: 200, message: 'success', data: roles }
     },
@@ -121,31 +174,60 @@ export default defineFakeRoute([
   {
     url: '/api/system/roles/update/:id',
     method: 'put',
-    response: ({params, body}) => {
-
+    response: ({ params, body }) => {
       const idx = roles.findIndex((r) => r.id === params.id)
       if (idx === -1) {
         return { code: 404, message: '找不到角色', data: null }
       }
-      console.log(body)
       roles[idx] = Object.assign(roles[idx], body)
-      console.log(roles[idx])
-
       return { code: 200, message: '更新成功', data: roles }
-    }
+    },
   },
   {
     url: '/api/system/roles/delete/:id',
     method: 'delete',
-    response: ({params}) => {
+    response: ({ params }) => {
       roles = roles.filter((r) => r.id !== params.id)
       return { code: 200, message: '角色删除成功', data: roles }
-    }
+    },
   },
   // 获取权限列表
   {
     url: '/api/system/permissions',
     method: 'get',
     response: () => ({ code: 200, message: 'success', data: permissions }),
+  },
+  {
+    url: '/api/system/permissions/create',
+    method: 'post',
+    response: () => {
+      const id = faker.string.uuid()
+      permissions.push({
+        id,
+        ...body,
+        createdAt: new Date().toISOString(),
+      })
+      return { code: 200, message: 'success', data: permissions }
+    },
+  },
+  {
+    url: '/api/system/permissions/update/:id',
+    method: 'put',
+    response: ({ params, body }) => {
+      const idx = permissions.findIndex((p) => p.id === params.id)
+      if (idx === -1) {
+        return { code: 404, message: '找不到相关权限', data: null }
+      }
+      permissions[idx] = Object.assign(permissions[idx], body)
+      return { code: 200, message: 'success', data: permissions }
+    },
+  },
+  {
+    url: '/api/system/permissions/delete/:id',
+    method: 'delete',
+    response: ({ params }) => {
+      permissions = permissions.filter((p) => p.id !== params.id)
+      return { code: 200, message: '删除成功', data: permissions }
+    },
   },
 ])

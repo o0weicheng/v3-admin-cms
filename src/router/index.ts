@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 import product from './modules/product'
-import recipes from './modules/recipes'
-import memos from './modules/memos'
 import system from './modules/system'
 import dashboard from './modules/dashboard'
 import { ElMessage } from 'element-plus'

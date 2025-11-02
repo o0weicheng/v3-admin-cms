@@ -1,4 +1,3 @@
-import { products } from './product.fake'
 // @ts-nocheck
 import { products } from './product.fake'
 

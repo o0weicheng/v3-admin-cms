@@ -137,7 +137,7 @@ watch(
   },
 )
 
-onMounted(() => {
+onBeforeMount(() => {
   getCategories()
   getProducts()
 })

@@ -16,7 +16,7 @@ export interface User {
   nickname: string
   role: string
   status: 0 | 1
-  createdAt: string
+  createdAt?: string
 }
 
 export interface Role<T = keyof PermissionMap> {
@@ -33,6 +33,9 @@ export interface Permission {
 }
 
 export const apiUserList = (): Promise<User[]> => http.get('/api/system/users')
+export const apiUserEdit = (payload: User): Promise<User> => http.put(`/api/system/users/update/${payload.id}`, { body: payload })
+export const apiUserCreate = (payload: User): Promise<User> => http.post(`/api/system/users/create`, { body: payload })
+export const apiUserDelete = (id: string): Promise<User> => http.delete(`/api/system/users/delete/${id}`)
 export const apiRoleList = (): Promise<Role[]> => http.get('/api/system/roles')
 export const apiPermissionList = (): Promise<Permission[]> => http.get('/api/system/permissions')
 export const apiRoleEdit = (payload: Role): Promise<Role> => http.put(`/api/system/roles/update/${payload.id}`, { body: payload })
