@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import {
   apiCategories,
   apiDeleteProduct,
@@ -142,7 +142,7 @@ onBeforeMount(() => {
   getProducts()
 })
 
-const onSearch = (e: Record<string, any>) => {
+const onSearch = () => {
   getProducts()
 }
 
@@ -158,7 +158,7 @@ const onShowDeleteMessage = (row: ProductResponse): void => {
     dangerouslyUseHTMLString: true,
     appendTo: 'body',
   }).then(async () => {
-    const res = await apiDeleteProduct(row.id)
+    await apiDeleteProduct(row.id)
     ElMessage.success(`商品：${row.name} 已删除`)
     await getProducts()
   })

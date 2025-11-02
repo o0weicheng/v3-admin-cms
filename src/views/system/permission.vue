@@ -77,7 +77,10 @@ onBeforeMount(() => {
     <template #header>
       <div flex justify-between items-center>
         <span>权限管理</span>
-        <el-button type="primary" @click="handleShowDialogEditor()">新增权限</el-button>
+        <div>
+          <el-button type="primary" link @click="handleShowDialogEditor()">权限映照表格</el-button>
+          <el-button type="primary">新增权限</el-button>
+        </div>
       </div>
     </template>
     <el-table :data="permissions" border style="width: 100%">

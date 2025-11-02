@@ -8,7 +8,12 @@ import { User } from '@element-plus/icons-vue'
       <el-input placeholder="搜索" />
     </div>
     <div>
-      <el-avatar shape="square" size="small" :icon="User"></el-avatar>
+      <el-dropdown>
+        <el-avatar shape="square" size="small" :icon="User"></el-avatar>
+        <template #dropdown>
+          <el-dropdown-item>退出登录</el-dropdown-item>
+        </template>
+      </el-dropdown>
     </div>
   </div>
 </template>
