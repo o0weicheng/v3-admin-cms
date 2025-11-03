@@ -24,5 +24,11 @@ export default {
       meta: { title: '权限管理' },
       component: () => import('@/views/system/permission.vue'),
     },
+    {
+      path: 'permission_maps',
+      name: 'system-permission-maps',
+      meta: { title: '权限映照表' },
+      component: () => import('@/views/system/permissionMaps.vue'),
+    },
   ],
 } as RouteRecordRaw

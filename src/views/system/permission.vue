@@ -8,6 +8,9 @@ import {
   type Permission,
 } from '@/api'
 import { formatDate } from '@vueuse/core'
+import { usePermissionStore } from '@/stores'
+const router = useRouter()
+const { permissionCascaderOptions } = usePermissionStore()
 
 const permissions = ref<Permission[]>([])
 const permissionDetail = ref<Permission>({
@@ -22,6 +25,7 @@ const dialogConfig = ref<{
   visibility: false,
   title: '',
 })
+
 const getPermissions = async () => {
   permissions.value = await apiPermissionList()
 }
@@ -67,6 +71,11 @@ const onConfirmPermissionEditor = async () => {
   await getPermissions()
 }
 
+const goToPermissionMaps = () => {
+  router.push({
+    name: 'system-permission-maps',
+  })
+}
 onBeforeMount(() => {
   getPermissions()
 })
@@ -78,8 +87,8 @@ onBeforeMount(() => {
       <div flex justify-between items-center>
         <span>权限管理</span>
         <div>
-          <el-button type="primary" link @click="handleShowDialogEditor()">权限映照表格</el-button>
-          <el-button type="primary">新增权限</el-button>
+          <el-button type="primary" link @click="goToPermissionMaps">权限映照表格</el-button>
+          <el-button type="primary" @click="handleShowDialogEditor()">新增权限</el-button>
         </div>
       </div>
     </template>
@@ -118,8 +127,9 @@ onBeforeMount(() => {
       <el-form-item label="权限名称">
         <el-input v-model="permissionDetail.label" />
       </el-form-item>
-      <el-form-item label="KEY">
+      <el-form-item label="权限内容">
         <el-input v-model="permissionDetail.name" />
+        <el-cascader v-model="permissionDetail.name" :options="permissionCascaderOptions"></el-cascader>
       </el-form-item>
       <el-form-item label="权限描述">
         <el-input v-model="permissionDetail.description" />

@@ -82,7 +82,7 @@ export let permissions = [
     id: faker.string.uuid(),
     name: 'permissions:add',
     label: '新增权限',
-    description: '可以权限',
+    description: '可以新增权限',
     createBy: users[0].nickname,
     createdAt: faker.date.recent({ days: 30 }).toISOString(),
   },
@@ -115,6 +115,16 @@ export let roles = [
   },
   { id: faker.string.uuid(), name: 'visitor', role: '访客', permissions: [] },
 ]
+
+export const permissionKeys = {
+  user: ['add', 'edit', 'delete', 'search'],
+  role: ['add', 'edit', 'delete'],
+  member: ['add'],
+  article: ['add', 'edit', 'delete', 'search'],
+  permission: ['add', 'edit', 'delete', 'search', 'assign'],
+  product: ['add', 'edit', 'delete', 'search'],
+  order: ['add', 'edit', 'delete', 'search'],
+}
 
 export default defineFakeRoute([
   // 获取用户列表
@@ -238,5 +248,5 @@ export default defineFakeRoute([
       permissions = permissions.filter((p) => p.id !== params.id)
       return { code: 200, message: '删除成功', data: permissions }
     },
-  },
+  }
 ])
