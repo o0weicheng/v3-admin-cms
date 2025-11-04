@@ -1,45 +1,43 @@
 // @ts-nocheck
-import { defineFakeRoute } from 'vite-plugin-fake-server'
+import { defineFakeRoute } from 'vite-plugin-fake-server/client'
 import { faker } from '@faker-js/faker'
+
 const uuid = () => faker.string.uuid()
+
+function randomDate(days = 30) {
+  const now = new Date()
+  return new Date(now.getTime() - Math.random() * days * 24 * 3600 * 1000).toISOString()
+}
+
 /**
- * 随机生成分类数据
+ * 生成带层级关系的分类
  */
 function generateFakeCategories(topLevelCount = 4, childCount = 3) {
-  const now = new Date()
-  const randomDate = () =>
-    new Date(now.getTime() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 30)).toISOString()
-
-  const categories = Array.from({ length: topLevelCount }).map((_, i) => {
+  return Array.from({ length: topLevelCount }).map(() => {
     const parentId = uuid()
-    const children = Array.from({ length: childCount }).map((_, j) => ({
+    const parentName = faker.commerce.department()
+    const children = Array.from({ length: childCount }).map(() => ({
       id: uuid(),
-      name: faker.word.adjective(),
+      name: faker.commerce.productAdjective(),
       parentId,
       createdAt: randomDate(),
       updatedAt: randomDate(),
     }))
-
     return {
       id: parentId,
-      name: faker.word.adjective(),
+      name: parentName,
       parentId: 0,
       createdAt: randomDate(),
       updatedAt: randomDate(),
       children,
     }
   })
-
-  return categories
 }
 
-/**
- * 初始化分类数据
- */
-let categories = generateFakeCategories(4, 3)
+export let categories = generateFakeCategories(4, 3)
 
 export default defineFakeRoute([
-  // 获取分类列表
+  // 分类列表
   {
     url: '/api/category/list',
     method: 'get',
@@ -50,15 +48,14 @@ export default defineFakeRoute([
     }),
   },
 
-  // 新增分类
+  // 创建分类
   {
     url: '/api/category/create',
     method: 'post',
     response: ({ body }) => {
       const { name, parentId = 0 } = body
-      const newId = Date.now()
       const newCategory = {
-        id: newId,
+        id: uuid(),
         name,
         parentId,
         createdAt: new Date().toISOString(),
@@ -76,22 +73,16 @@ export default defineFakeRoute([
       return { code: 200, message: '创建成功', data: newCategory }
     },
   },
+
   // 更新分类
   {
-    url: '/api/category/update',
+    url: '/api/category/update/:id',
     method: 'put',
-    response: ({ body }) => {
-      const index = categories.findIndex((c) => c.id === body.id)
-      if (index === -1) {
+    response: ({ params, body }) => {
+      const index = categories.findIndex((c) => c.id === params.id)
+      if (index === -1)
         return { code: 404, message: '分类不存在', data: null }
-      }
-      if (body.children.length > categories[index].children.length) {
-        for (let i = 0; i < body.children.length; i++) {
-          if (!body.children[i].id) {
-            body.children[i].id = uuid()
-          }
-        }
-      }
+
       categories[index] = { ...categories[index], ...body, updatedAt: new Date().toISOString() }
       return { code: 200, message: '更新成功', data: categories[index] }
     },
@@ -99,25 +90,15 @@ export default defineFakeRoute([
 
   // 删除分类
   {
-    url: '/api/category/delete',
+    url: '/api/category/delete/:id',
     method: 'delete',
-    response: ({ query }) => {
-      const { id } = query
+    response: ({ params }) => {
+      const id = params.id
       categories = categories.filter((c) => c.id !== id)
       categories.forEach((c) => {
         c.children = c.children.filter((cc) => cc.id !== id)
       })
-      return { code: 200, message: '删除成功', data: null }
-    },
-  },
-
-  // 重置分类数据
-  {
-    url: '/api/category/reset',
-    method: 'post',
-    response: () => {
-      categories = generateFakeCategories(4, 3)
-      return { code: 200, message: '分类数据已重置', data: null }
+      return { code: 200, message: '删除成功' }
     },
   },
 ])

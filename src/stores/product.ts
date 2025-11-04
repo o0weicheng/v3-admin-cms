@@ -5,7 +5,8 @@ export const useProductStore = defineStore('product', () => {
   const detail = reactive<ProductResponse>({
     id: 0,
     name: '',
-    category: '',
+    categoryId: '',
+    categoryName: '',
     price: 0,
     stock: 0,
     sales: 0,
@@ -24,7 +25,8 @@ export const useProductStore = defineStore('product', () => {
     Object.assign(detail, {
       id: 0,
       name: '',
-      category: '',
+      categoryId: '',
+      categoryName: '',
       price: 0,
       stock: 0,
       sales: 0,

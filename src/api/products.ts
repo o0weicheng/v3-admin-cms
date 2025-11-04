@@ -4,7 +4,8 @@ import type { PaginationResponse } from '.'
 export interface ProductResponse {
   id: number
   name: string
-  category: string
+  categoryId: string
+  categoryName: string
   price: number
   stock: number
   sales: number
@@ -47,7 +48,7 @@ export const apiCreateProduct = async (payload: ProductResponse): Promise<Produc
 
 // 编辑商品 api
 export const apiUpdateProduct = async (payload: ProductResponse): Promise<ProductResponse> =>
-  http.put('/api/product/update/', { body: payload })
+  http.put(`/api/product/update/${payload.id}`, { body: payload })
 
 // 商品分类查询列表 api
 export const apiCategories = async (): Promise<CategoryResponse[]> => http.get(`/api/category/list`)
@@ -58,7 +59,7 @@ export const apiCreateCategory = async (payload: CategoryResponse): Promise<Cate
 
 // 编辑商品分类 api
 export const apiUpdateCategory = async (payload: CategoryResponse): Promise<CategoryResponse> =>
-  http.put(`/api/category/update`, { body: payload })
+  http.put(`/api/category/update/${payload.id}`, { body: payload })
 
 // 删除商品分类 api
 export const apiDeleteCategory = async (id: number): Promise<void> =>
