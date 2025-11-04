@@ -1,6 +1,7 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { apiLogin, type LoginPayload, type LoginResponse } from '@/api'
+import { Storage } from '@/types'
 
 interface SetUserOptions {
   key: string
@@ -12,7 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(loginInfo: LoginPayload): Promise<LoginResponse | null> {
     const { token, userInfo } = await apiLogin(loginInfo)
-    localStorage.setItem('token',token)
+    localStorage.setItem(Storage.TOKEN, token)
 
     setUserInfo(userInfo)
     return { token, userInfo }
@@ -27,7 +28,7 @@ export const useAuthStore = defineStore('auth', () => {
       return
     }
     Object.assign(userInfo, info)
-    localStorage.setItem('userInfo', JSON.stringify(userInfo))
+    localStorage.setItem(Storage.USERINFO, JSON.stringify(userInfo))
   }
 
   return { userInfo, login, setUserInfo }

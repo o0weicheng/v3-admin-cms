@@ -121,8 +121,6 @@ watch(
   },
 )
 
-// 加入分页判断
-// 如果页面数大于1，且当前页数据为空，则将页码减1后重新获取数据
 const onSearch = (data?: Record<string, any>) => {
   Object.assign(form, data)
   if (pagination.value.page !== 1) pagination.value.page = 1
@@ -151,7 +149,7 @@ const goToOrderDetail = (order: Order) => {
 
 <template>
   <el-card>
-    <query-form :fields="fields" @search="onSearch" />
+    <query-form :fields="fields" @search="onSearch" @reset="onSearch" />
   </el-card>
   <el-card mt-2>
     <query-data-table

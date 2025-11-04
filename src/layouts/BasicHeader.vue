@@ -1,5 +1,12 @@
 <script lang="ts" setup>
 import { User } from '@element-plus/icons-vue'
+import { Storage } from '@/types'
+
+const router = useRouter()
+const handleDropDowmCommand = () => {
+  localStorage.clear()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -8,10 +15,10 @@ import { User } from '@element-plus/icons-vue'
       <el-input placeholder="搜索" />
     </div>
     <div>
-      <el-dropdown>
+      <el-dropdown @command="handleDropDowmCommand">
         <el-avatar shape="square" size="small" :icon="User"></el-avatar>
         <template #dropdown>
-          <el-dropdown-item>退出登录</el-dropdown-item>
+          <el-dropdown-item command="logout">退出登录</el-dropdown-item>
         </template>
       </el-dropdown>
     </div>
