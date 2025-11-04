@@ -80,7 +80,7 @@ export let permissions = [
   },
   {
     id: faker.string.uuid(),
-    name: 'permissions:add',
+    name: 'permission:add',
     label: '新增权限',
     description: '可以新增权限',
     createBy: users[0].nickname,
@@ -88,7 +88,7 @@ export let permissions = [
   },
   {
     id: faker.string.uuid(),
-    name: 'permissions:edit',
+    name: 'permission:edit',
     label: '编辑权限',
     description: '可以编辑权限',
     createBy: users[0].nickname,

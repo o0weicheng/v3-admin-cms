@@ -8,9 +8,14 @@ import {
   type Permission,
 } from '@/api'
 import { formatDate } from '@vueuse/core'
-import { usePermissionStore } from '@/stores'
+import {
+  type PermissionModelKeys,
+  type permissionName,
+  type PermissionOperateKeys,
+  usePermissionStore,
+} from '@/stores'
 const router = useRouter()
-const { permissionCascaderOptions } = usePermissionStore()
+const { permissionValuesOption, permissionValuesMap } = usePermissionStore()
 
 const permissions = ref<Permission[]>([])
 const permissionDetail = ref<Permission>({
@@ -18,12 +23,32 @@ const permissionDetail = ref<Permission>({
   label: '',
   description: '',
 })
+const permissionValues = ref<{
+  model: PermissionModelKeys | ''
+  operate: PermissionOperateKeys | ''
+}>({
+  model: '',
+  operate: '',
+})
 const dialogConfig = ref<{
   visibility: boolean
   title: string
 }>({
   visibility: false,
   title: '',
+})
+
+const checkPermissionValues = computed(() => {
+  const [model, operate] = permissionDetail.value.name.split(':')
+  let valuesMap: string[] = []
+  for (const permission of permissions.value) {
+    if (!permission.name) continue
+    if (permission.name.includes(model!)) {
+      const [m, o] = permission.name.split(':')
+      if (o !== operate) valuesMap.push(o!)
+    }
+  }
+  return valuesMap
 })
 
 const getPermissions = async () => {
@@ -35,6 +60,11 @@ const handleShowDialogEditor = (permission?: Permission) => {
   if (permission) {
     dialogConfig.value.title = '编辑权限'
     permissionDetail.value = structuredClone(toRaw(permission))
+    const [model, operate] = permissionValuesMap(permissionDetail.value.name as permissionName)
+    permissionValues.value = {
+      model,
+      operate,
+    }
   } else {
     dialogConfig.value.title = '新增权限'
   }
@@ -58,9 +88,14 @@ const handleDialogClose = () => {
     label: '',
     description: '',
   }
+  permissionValues.value = {
+    model: '',
+    operate: '',
+  }
 }
 
 const onConfirmPermissionEditor = async () => {
+  permissionDetail.value.name = Object.values(permissionValues.value).join(':')
   if (permissionDetail.value?.id) {
     await apiPermissionEdit(toRaw(permissionDetail.value))
   } else {
@@ -121,6 +156,7 @@ onBeforeMount(() => {
     append-to-body
     v-model="dialogConfig.visibility"
     :title="dialogConfig.title"
+    width="60%"
     @close="handleDialogClose"
   >
     <el-form :model="permissionDetail">
@@ -128,8 +164,21 @@ onBeforeMount(() => {
         <el-input v-model="permissionDetail.label" />
       </el-form-item>
       <el-form-item label="权限内容">
-        <el-input v-model="permissionDetail.name" />
-        <el-cascader v-model="permissionDetail.name" :options="permissionCascaderOptions"></el-cascader>
+        <el-radio-group v-model="permissionValues.model">
+          <el-radio v-for="model in permissionValuesOption['model']" :value="model.value">{{
+            model.label
+          }}</el-radio>
+        </el-radio-group>
+        <el-card shadow="never" mt-2>
+          <el-radio-group v-model="permissionValues.operate">
+            <el-radio
+              :disabled="checkPermissionValues.includes(operate.value)"
+              v-for="operate in permissionValuesOption['operate']"
+              :value="operate.value"
+              >{{ operate.label }}</el-radio
+            >
+          </el-radio-group>
+        </el-card>
       </el-form-item>
       <el-form-item label="权限描述">
         <el-input v-model="permissionDetail.description" />
