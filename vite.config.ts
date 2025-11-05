@@ -15,40 +15,52 @@ import UnoCSS from '@unocss/vite'
 import unoConfig from './uno.config'
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    vue(),
-    vueDevTools(),
-    AutoImport({
-      resolvers: [ElementPlusResolver()],
-      imports: ['vue', 'vue-router'],
-    }),
-    Components({
-      extensions: ['vue', 'md'],
-      include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
-      resolvers: [
-        ElementPlusResolver({
-          importStyle: 'sass',
-        }),
-      ],
-      dts: 'src/components.d.ts',
-    }),
-    vitePluginFakeServer({
-      logger: true,
-      enableProd: true
-    }),
-    UnoCSS(unoConfig),
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@use "@/styles/element.scss" as *;`,
+export default defineConfig(({mode}) => {
+
+  const isDev = mode === 'development'
+  return {
+    plugins: [
+      vue(),
+      vueDevTools(),
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+        imports: ['vue', 'vue-router'],
+      }),
+      Components({
+        extensions: ['vue', 'md'],
+        include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
+        resolvers: [
+          ElementPlusResolver({
+            importStyle: 'sass',
+          }),
+        ],
+        dts: 'src/components.d.ts',
+      }),
+      ...(isDev ?[vitePluginFakeServer({
+        logger: true,
+        enableProd: true,
+      })]: []),
+      UnoCSS(unoConfig),
+    ],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
-  },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use "@/styles/element.scss" as *;`,
+        },
+      },
+    },
+    optimizeDeps: {
+      exclude: ['fsevents'],
+    },
+    build: {
+      rollupOptions: {
+        external: ['fsevents'],
+      },
+    },
+  }
 })
