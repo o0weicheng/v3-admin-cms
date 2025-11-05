@@ -18,10 +18,7 @@ export default defineFakeRoute([
         return { code: 401, message: '密码错误' }
       }
 
-      const userRoles = roles.filter((r) => user.roleIds.includes(r.id))
-      const userPermissions = Array.from(new Set(userRoles.flatMap((r) => r.permissionIds))).map(
-        (pid) => permissions.find((p) => p.id === pid),
-      )
+      const userRoles = roles.filter((r) => user.roleId === r.id)
 
       return {
         code: 200,
@@ -34,7 +31,6 @@ export default defineFakeRoute([
             nickname: user.nickname,
             avatar: faker.image.avatar(),
             roles: userRoles.map((r) => r.name),
-            permissions: userPermissions.map((p) => p.name),
           },
         },
       }

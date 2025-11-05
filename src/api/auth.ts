@@ -30,8 +30,8 @@ export interface ResetPasswordPayload {
 }
 
 export const apiLogin = async (payload: LoginPayload) =>
-  await http.post('/auth/login', { body: payload })
+  await http.post('/api/auth/login', { body: payload })
 export const apiForgotPassword = async (payload: ForgotPasswordPayload) =>
-  await http.post('/auth/forgot-password', { body: payload })
+  await http.post('/api/auth/forgot-password', { body: payload })
 export const apiResetPassword = async (payload: ResetPasswordPayload) =>
-  await http.put('/auth/reset-password', { body: payload })
+  await http.put('/api/auth/reset-password', { body: payload })
