@@ -1,42 +1,105 @@
 # vue-elplus-admin
 
-This template should help get you started developing with Vue 3 in Vite.
+vue3.x + element plus 管理后台 练习项目
 
-## Recommended IDE Setup
+### 目录：
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-bun install
+```text
+fake/
+src/
+├── api/
+├── assets/
+├── components/
+│   ├── Chart.vue
+│   ├── DetailForm.vue
+│   ├── QueryDataTable.vue
+│   ├── QueryForm.vue
+│   ├── StatusDot.vue
+│   └── types.ts
+├── layouts/
+├── plugins/
+├── router/
+├── stores/
+├── styles/
+├── types/
+├── utils/
+├── views/
+│   ├── dashboard/
+│   ├── login/
+│   ├── logs/
+│   ├── member/
+│   ├── order/
+│   ├── product/
+│   ├── system/
+├── App.vue
+├── main.ts
+└── README.md
 ```
 
-### Compile and Hot-Reload for Development
+### 路由:
 
-```sh
-bun dev
+- 仪表盘
+- 订单管理
+- 商品管理
+  - 商品列表
+  - 分类类别
+  - 商品详情
+- 会员管理
+- 日志管理
+- 系统
+  - 系统设置
+  - 账号与角色
+  - 权限管理
+  - 权限映照表
+
+### 页面
+
+![./pics/dashboard.jpeg](./pics/dashboard.jpeg)
+![./pics/role.jpeg](./pics/role.jpeg)
+
+### 封装组件
+
+- Chart.vue
+- DetailForm.vue
+- QueryForm.vue
+- QueryDetailTable.vue
+- StatusDot.vue
+
+#### DetailForm
+封装详情页的表单，跟 `QueryForm` 稍有不同
+但用法一致，接收两个 props `:fields="fields" :detail="detail"`
+
+fields 是个数组:
+```typescript
+interface Field<TData extends Record<string, any> = any, TValue = any, TResult = string> {
+    type: FieldType | HTMLInputElement['type']
+    label: string
+    value?: any
+    options?: FieldOption[]
+    prop: keyof TData & string
+    props?: Record<string, unknown>
+    placeholder?: string
+    fmt?: Formatter<TValue, TResult>
+}
+```
+像这样：
+```typescript
+const fields = ref<Field[]>([
+    {
+        type: 'input',
+        label: '商品名称',
+        prop: 'name',
+        props: { placeholder: '请输入商品名' },
+    },
+    {
+        type: 'cascader',
+        label: '商品类别',
+        prop: 'categoryName',
+        props: { placeholder: '选择商品类别' },
+        options: [],
+        value: detail.categoryName,
+    }
+])
 ```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
-bun run build
-```
+detail 就是 el-form 的 data，用于双向绑定。
