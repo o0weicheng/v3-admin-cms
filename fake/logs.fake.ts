@@ -12,7 +12,7 @@ interface Log {
   createdAt: string
 }
 
-const logs: Log[] = Array.from({ length: 80 }).map(() => ({
+export const logs: Log[] = Array.from({ length: 80 }).map(() => ({
   id: faker.string.uuid(),
   username: faker.helpers.arrayElement(['admin', 'editor', 'guest', 'system']),
   action: faker.helpers.arrayElement(['新增', '修改', '删除', '登录', '登出', '查看']),

@@ -5,7 +5,7 @@ import { defineFakeRoute } from 'vite-plugin-fake-server'
 import { faker } from '@faker-js/faker'
 
 // 初始化模拟会员数据
-let memberList = Array.from({ length: 80 }).map(() => ({
+export let memberList = Array.from({ length: 80 }).map(() => ({
   id: faker.string.uuid(),
   avatar: faker.image.avatarGitHub(),
   name: faker.person.fullName(),

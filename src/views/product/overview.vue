@@ -8,15 +8,13 @@ import {
   type ProductResponse,
 } from '@/api'
 
-import type { Field, FieldOption } from '@/components/QueryForm.vue'
+import type { Field } from '@/components/QueryForm.vue'
 import type { QueryDataOptions } from '@/components/QueryDataTable.vue'
 
 import { formatTime } from '@/plugins/TimeFormat'
 import { useProductStore } from '@/stores/product.ts'
 
 const router = useRouter()
-
-const categories = ref<FieldOption[]>([])
 
 const fields = ref<Field[]>([
   { type: 'input', label: '商品名称', prop: 'name', placeholder: '请输入商品名' },

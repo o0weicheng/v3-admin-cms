@@ -13,7 +13,7 @@ const p = () => {
   }))
 }
 // 模拟数据库：订单列表
-let orderList = Array.from({ length: 120 }).map(() => {
+export let orderList = Array.from({ length: 120 }).map(() => {
   const orderId = faker.string.uuid()
   const totalAmount = p().reduce((sum, p) => sum + p.price * p.quantity, 0)
 

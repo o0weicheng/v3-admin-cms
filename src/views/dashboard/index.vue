@@ -148,16 +148,16 @@ onUnmounted(() => {
         <h3 text="#666 16px">最近订单</h3>
         <el-table :data="dashboardOrders" size="small">
           <el-table-column prop="orderNo" label="订单号" />
-          <el-table-column prop="customer" label="客户姓名" />
+          <el-table-column prop="userName" label="客户姓名" />
           <el-table-column prop="createdAt" label="订单日期">
             <template #default="scoped">
               {{ formatTime(scoped.row.createdAt) }}
             </template>
           </el-table-column>
           <el-table-column prop="status" label="状态" width="120" />
-          <el-table-column prop="amount" label="总金额" width="120">
+          <el-table-column prop="totalAmount" label="总金额" width="120">
             <template #default="scoped">
-              <span>¥</span><span>{{ scoped.row.amount }}</span>
+              <span>¥</span><span>{{ scoped.row.totalAmount }}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -168,13 +168,13 @@ onUnmounted(() => {
             <h3 text="#666 16px">最新会员</h3>
             <el-table :data="dashboardUsers" size="small">
               <el-table-column prop="name" label="会员名称" width="190" />
-              <el-table-column prop="registerTime" label="注册时间" width="200">
+              <el-table-column prop="registerAt" label="注册时间" width="200">
                 <template #default="scoped">
-                  {{ formatTime(scoped.row.registerTime) }}
+                  {{ formatTime(scoped.row.registerAt) }}
                 </template>
               </el-table-column>
               <el-table-column prop="level" label="等级" width="120" />
-              <el-table-column prop="region" label="地区" width="120" />
+              <el-table-column prop="phone" label="手机号" width="120" />
             </el-table>
           </el-card>
         </el-col>
@@ -199,12 +199,12 @@ onUnmounted(() => {
               center
               v-for="log in dashboardLogs"
               :key="log.id"
-              :timestamp="formatTime(log.time)"
+              :timestamp="formatTime(log.createdAt)"
               placement="top"
             >
               <el-card>
                 <h4 m-0 mb-2>{{ log.action }}</h4>
-                <el-text size="small">操作人员：{{ log.user }}</el-text>
+                <el-text size="small">操作人员：{{ log.username }}</el-text>
               </el-card>
             </el-timeline-item>
           </el-timeline>

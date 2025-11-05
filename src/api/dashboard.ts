@@ -47,10 +47,13 @@ export interface DashboardRecentOrder {
 
 export interface DashboardLogs {
   id: string
-  user: string
+  username: string
   action: string
+  module: string
   ip: string
-  time: string
+  status: number
+  message: string
+  createdAt: string
 }
 
 export interface DashboardMarketingItem {

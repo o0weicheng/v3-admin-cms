@@ -2,6 +2,10 @@
 
 import { defineFakeRoute } from 'vite-plugin-fake-server'
 import { faker } from '@faker-js/faker'
+import { orderList } from './order.fake'
+import { products } from './product.fake'
+import { logs } from './logs.fake'
+import { memberList } from './member.fake'
 
 // 生成最近7天
 function genDays(count = 7) {
@@ -105,15 +109,7 @@ export default defineFakeRoute([
     response: () => ({
       code: 200,
       message: 'ok',
-      data: Array.from({ length: 8 }).map(() => ({
-        id: faker.string.uuid(),
-        name: faker.commerce.productName(),
-        category: faker.commerce.department(),
-        stock: faker.number.int({ min: 0, max: 500 }),
-        price: faker.commerce.price({ min: 10, max: 200 }),
-        sold: faker.number.int({ min: 50, max: 1000 }),
-        rating: faker.number.float({ min: 3, max: 5, precision: 0.1 }),
-      })),
+      data: products.slice(0, 10),
     }),
   },
 
@@ -146,14 +142,7 @@ export default defineFakeRoute([
     response: () => ({
       code: 200,
       message: 'ok',
-      data: Array.from({ length: 6 }).map(() => ({
-        id: faker.string.uuid(),
-        orderNo: faker.string.alphanumeric({ length: 10 }),
-        customer: faker.person.fullName(),
-        amount: faker.commerce.price({ min: 20, max: 2000 }),
-        status: faker.helpers.arrayElement(['已完成', '待发货', '已取消', '退款中']),
-        createdAt: faker.date.recent({ days: 7 }),
-      })),
+      data: orderList.slice(0, 10),
     }),
   },
 
@@ -166,19 +155,7 @@ export default defineFakeRoute([
     response: () => ({
       code: 200,
       message: 'ok',
-      data: Array.from({ length: 15 }).map(() => ({
-        id: faker.string.uuid(),
-        user: faker.person.fullName(),
-        action: faker.helpers.arrayElement([
-          '登录系统',
-          '新增商品',
-          '删除订单',
-          '编辑文章',
-          '导出报表',
-        ]),
-        ip: faker.internet.ip(),
-        time: faker.date.recent({ days: 3 }),
-      })),
+      data: logs.slice(0,10),
     }),
   },
 
@@ -230,14 +207,7 @@ export default defineFakeRoute([
     response: () => ({
       code: 200,
       message: 'ok',
-      data: Array.from({ length: 10 }).map(() => ({
-        id: faker.string.uuid(),
-        name: faker.person.fullName(),
-        level: faker.helpers.arrayElement(['普通用户', '会员', 'VIP']),
-        registerTime: faker.date.past({ years: 1 }),
-        lastLogin: faker.date.recent({ days: 15 }),
-        region: faker.location.city(),
-      })),
+      data: memberList.slice(0, 10),
     }),
   },
 ])

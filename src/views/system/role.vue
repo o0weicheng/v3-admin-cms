@@ -51,7 +51,7 @@ const drawerConfig = ref<{
   type: '',
 })
 const init = () => {
-  Promise.all([getPermissions(), getRoles(), getUsers()])
+  Promise.allSettled([getPermissions(), getRoles(), getUsers()])
 }
 const getPermissions = async () => {
   PermissionList.value = await apiPermissionList()

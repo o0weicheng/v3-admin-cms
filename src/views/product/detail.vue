@@ -21,10 +21,10 @@ const fields = ref<Field<ProductResponse>[]>([
   {
     type: 'cascader',
     label: '商品类别',
-    prop: 'category',
+    prop: 'categoryName',
     props: { placeholder: '选择商品类别' },
     options: [],
-    value: detail.category,
+    value: detail.categoryName,
   },
   {
     type: 'number',
@@ -68,8 +68,8 @@ const fields = ref<Field<ProductResponse>[]>([
 
 const getCategories = async () => {
   const aCategories = await apiCategories()
-  if (!fields.value[2]) return
-  fields.value[2].options = aCategories.map((_c) => ({
+  if (!fields.value[1]) return
+  fields.value[1].options = aCategories.map((_c) => ({
     label: _c.name,
     value: _c.id,
     children: _c.children?.map((_s) => ({
@@ -79,8 +79,8 @@ const getCategories = async () => {
   }))
 }
 
-onBeforeMount(() => {
-  getCategories()
+onBeforeMount(async () => {
+  await getCategories()
   // 用户刷新页面导致 store 数据丢失
   // 从 localStorage 取
   if (!detail.id) {

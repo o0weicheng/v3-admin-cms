@@ -152,6 +152,17 @@ export default defineFakeRoute([
     },
   },
   {
+    url: '/api/system/users',
+    method: 'get',
+    response: () => {
+      return {
+        code: 200,
+        data: users,
+        message: ''
+      }
+    }
+  },
+  {
     url: '/api/system/users/update/:id',
     method: 'put',
     response: ({ params, body }) => {

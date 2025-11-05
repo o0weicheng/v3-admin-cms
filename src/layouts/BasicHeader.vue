@@ -11,8 +11,8 @@ const handleDropDowmCommand = () => {
 
 <template>
   <div h="50px" flex justify-between items-center px-6>
-    <div>
-      <el-input placeholder="搜索" />
+    <div font-bold text-white text-3xl>
+      LOGO
     </div>
     <div>
       <el-dropdown @command="handleDropDowmCommand">

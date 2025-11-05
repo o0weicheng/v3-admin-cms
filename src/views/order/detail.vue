@@ -51,7 +51,7 @@ const dataOptions: QueryDataOptions[] = [
   },
   {
     label: '类别',
-    prop: 'category',
+    prop: 'categoryName',
     type: 'tag',
   },
 ]
