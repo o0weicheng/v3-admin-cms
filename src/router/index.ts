@@ -43,6 +43,8 @@ router.beforeEach((to, from, next) => {
   if (token) {
     if (to.name === 'Login') {
       return next({ name: 'Login' })
+    } else if (to.path === '/') {
+      return next({ name: 'dashboard' })
     }
     return next()
   } else {
